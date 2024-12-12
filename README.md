@@ -1,1 +1,1 @@
-# SMC_features
+# SMCfeatures

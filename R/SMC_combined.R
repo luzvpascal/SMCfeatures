@@ -40,7 +40,7 @@ SMC_combined <- function(args,
   doParallel::registerDoParallel(cl)
   #sample priors
   param_vals <- foreach::foreach(i = 1:n_particles, .combine="rbind") %dopar% {
-    args$sampler(args)###WE ARE HERE
+    args$sampler(args)
   }
   param_vals <- unname(param_vals)
 
@@ -252,7 +252,7 @@ SMC_combined <- function(args,
 
     #update number of mcmc trials required in next SMC step
     num_mcmc_iters = max(0, mcmc_iters - mcmc_trials) + mcmc_trials
-    mcmc_trials = ceil(mcmc_iters/2)
+    mcmc_trials = ceiling(mcmc_iters/2)
 
     # PREPARE FOR REWEIGHTING
 

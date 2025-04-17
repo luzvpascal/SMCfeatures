@@ -5,6 +5,7 @@
 #' @param mcmc_steps number of MCMC steps
 #' @param params_transformed vector of values of parameters for current particle
 #' @param cov_matrix covariance matrix
+#' @param disc current discrepancy of the particle
 #' @param dist_next next objective distance
 #' @param acc_count number of times the particle has been moved
 #' @param loglike log-likelihood of parameters
@@ -21,6 +22,7 @@ MCMC_combined <- function(args,
                           mcmc_steps,
                           params_transformed,
                           cov_matrix,
+                          disc,
                           dist_next,
                           acc_count,
                           loglike,

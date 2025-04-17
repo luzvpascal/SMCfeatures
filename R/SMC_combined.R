@@ -186,12 +186,12 @@ SMC_combined <- function(args,
 
     mcmc_outcome <- foreach::foreach(i=1:n_particles,
                                      .packages =c('SMCfeatures')) %dopar% {
-                                       SMCfeatures::MCMC_combined(mcmc_trials,
+                                       SMCfeatures::MCMC_combined(args,
+                                                                  mcmc_trials,
                                                                   param_vals_transformed[i,],
-                                                                  param_disc[i],
-                                                                  acc_counter[i],
+                                                                  cov_matrix,
                                                                   dist_next,
-                                                                  param_sims[[i]],
+                                                                  acc_counter[i],
                                                                   param_loglike[i],
                                                                   newgamma)
                                      }
@@ -220,12 +220,12 @@ SMC_combined <- function(args,
 
     mcmc_outcome <- foreach::foreach(i=1:n_particles,
                                      .packages =c('SMCfeatures')) %dopar% {
-                                       SMCfeatures::MCMC_combined(mcmc_iters-mcmc_trials,
+                                       SMCfeatures::MCMC_combined(args,
+                                                                  mcmc_iters-mcmc_trials,
                                                                   param_vals_transformed[i,],
-                                                                  param_disc[i],
-                                                                  acc_counter[i],
+                                                                  cov_matrix,
                                                                   dist_next,
-                                                                  param_sims[[i]],
+                                                                  acc_counter[i],
                                                                   param_loglike[i],
                                                                   newgamma)
                                      }

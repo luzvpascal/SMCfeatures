@@ -9,9 +9,11 @@ MCMC_combined(
   mcmc_steps,
   params_transformed,
   cov_matrix,
+  disc,
   dist_next,
-  acc_count,
+  sims,
   loglike,
+  acc_count,
   newgamma
 )
 }
@@ -24,11 +26,15 @@ MCMC_combined(
 
 \item{cov_matrix}{covariance matrix}
 
+\item{disc}{current discrepancy of the particle}
+
 \item{dist_next}{next objective distance}
 
-\item{acc_count}{number of times the particle has been moved}
+\item{sims}{list like object summarizing simulation outcomes}
 
 \item{loglike}{log-likelihood of parameters}
+
+\item{acc_count}{number of times the particle has been moved}
 
 \item{newgamma}{new temperature}
 }

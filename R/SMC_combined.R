@@ -72,7 +72,7 @@ SMC_combined <- function(args,
   #save prior sample
   prior <- param_vals
 
-  param_w = rep(1,n_particles)/n_particles # particle weightings
+  param_w <- rep(1,n_particles)/n_particles # particle weightings
 
   print(paste0('Initial constraint acceptance: ',
                sum(param_disc<=args$discrepancy_final),
@@ -97,6 +97,7 @@ SMC_combined <- function(args,
 
   while(gamma_t < 1 | dist_max > args$discrepancy_final){
     SMC_count  <- SMC_count+1 #track number of SMC steps
+    print(paste0("SMC iteration: ", SMC_count))
 
     #########################################################################################################
     # -----REWEIGHT----- Select next discrepancy and likelihood thresholds, and weight particles accordingly#
@@ -192,8 +193,9 @@ SMC_combined <- function(args,
                                                                   cov_matrix,
                                                                   param_disc[i],
                                                                   dist_next,
-                                                                  acc_counter[i],
+                                                                  param_sims[i],
                                                                   param_loglike[i],
+                                                                  acc_counter[i],
                                                                   newgamma)
                                      }
     parallel::stopCluster(cl)#stop cluster
@@ -227,8 +229,9 @@ SMC_combined <- function(args,
                                                                   cov_matrix,
                                                                   param_disc[i],
                                                                   dist_next,
-                                                                  acc_counter[i],
+                                                                  param_sims[i],
                                                                   param_loglike[i],
+                                                                  acc_counter[i],
                                                                   newgamma)
                                      }
     parallel::stopCluster(cl)#stop cluster

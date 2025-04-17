@@ -7,8 +7,9 @@
 #' @param cov_matrix covariance matrix
 #' @param disc current discrepancy of the particle
 #' @param dist_next next objective distance
-#' @param acc_count number of times the particle has been moved
+#' @param sims list like object summarizing simulation outcomes
 #' @param loglike log-likelihood of parameters
+#' @param acc_count number of times the particle has been moved
 #' @param newgamma new temperature
 #' @return list
 #' params_transformed: vector of moved parameters
@@ -24,8 +25,9 @@ MCMC_combined <- function(args,
                           cov_matrix,
                           disc,
                           dist_next,
-                          acc_count,
+                          sims,
                           loglike,
+                          acc_count,
                           newgamma){
   for (r in seq(mcmc_steps)){
     # Gaussian random walk

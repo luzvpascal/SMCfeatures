@@ -29,11 +29,11 @@ MCMC_combined <- function(args,
     # Gaussian random walk
     prop_transformed <- MASS::mvrnorm(n=1,mu=params_transformed,Sigma=cov_matrix)
     # Transform back to calculate prior probs and discrepancy
-    prop <- args$trans_finv(prop_transformed,args)
+    prop <- args$trans_finv(matrix(prop_transformed, nrow=1),args)
 
     # Calculate prior probabilities
-    prior_curr <- args$prior_pdf(params_transformed)
-    prior_prop <- args$prior_pdf(prop_transformed)
+    prior_curr <- args$prior_pdf(matrix(params_transformed, nrow=1))
+    prior_prop <- args$prior_pdf(matrix(prop_transformed, nrow=1))
 
     # early rejection (assumes symmetric proposals)
     if(((is.nan(prior_prop/prior_curr))| (runif(1) > prior_prop/prior_curr))){
@@ -51,7 +51,7 @@ MCMC_combined <- function(args,
     }
 
     # then the metropolis-hastings ratio is satisfied
-    sims_prop <- args$simulate_data(prop,args,sims_prop)
+    sims_prop <- args$simulate_data(prop,sims_prop,args)
     log_like_prop  <- args$calculate_log_likelihood(prop,sims_prop,args)
     mh  <- exp(newgamma*(log_like_prop - loglike))
 

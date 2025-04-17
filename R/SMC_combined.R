@@ -127,12 +127,12 @@ SMC_combined <- function(args,
       newgamma <- 1 #sample the posterior
     } else{
       #find the temperature (gamma_t) at which the effective sample size is equal to the threshold ESS
-      solution <- pracma::fzero(function(x){SMCfeatures::calc_ess(x,
-                                                     gamma_t,
-                                                     param_w_weighted_by_discrepancy_threshold,
-                                                     param_loglike_weighted_by_discrepancy_threshold)-ESS},
-                                gamma_t)
-      newgamma <- solution$x
+      f <- function (x, oldgamma, part_w, part_loglike) SMCfeatures::calc_ess(x, oldgamma, part_w, part_loglike)-ESS
+
+      solution <- stats::uniroot(f, c(gamma_t,1),oldgamma=gamma_t,
+                          part_w=param_w_weighted_by_discrepancy_threshold,
+                          part_loglike=param_loglike_weighted_by_discrepancy_threshold)
+      newgamma <- solution$root
     }
 
     #calculate particle likelihood weights for new temperature (gamma)

@@ -1,10 +1,10 @@
-#' @title model_logistic_growth_plot
+#' @title Model on data for logistic growth case study
 #' @description
-#' Simulate
+#' Simulate outputs of calibrated model for the logistic growth case study
 #' @param parameters vector of parameters (growth rate, capacity, initial abundance)
-#' @param simulation list of simulation arguments
-#' @param args a list of arguments as returned by \link[SMCfeatures]{args_function}
-#' @return simulation with added time, and y (output of simulation)
+#' @param simulation list of simulation arguments, as returned by \link[SMCfeatures]{model_logistic_growth_constraint}
+#' @param args a list of arguments as returned by \link[SMCfeatures]{define_args_logistic_growth}
+#' @return list like object of simulation with added time, and y (output of simulation)
 #' @export
 model_logistic_growth_plots <- function(parameters,
                                        simulation,

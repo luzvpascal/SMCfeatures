@@ -1,19 +1,17 @@
 #' @title SMCfeatures
 #' @description
 #' Main function for any parameterisation of expert elicited constraints
+#' @param define_args function describing the arguments of the case study. Defaul \link[SMCfeatures]{define_args_logistic_growth}
+#' @param include_expert_constraints boolean indicating whether expert ellicited constraints should be included. Default TRUE
+#' @param include_data_constraints boolean indicating whether data should be included. Default TRUE
 #' @param n_particles Number of desired ensemble members. Default to 10000
-#' @param define_args summary statistic (discrepancy measure). Default discrepancy_logistic_growth
 #' @param mcmc_trials number of MCMC steps to try before selecting appropriate number. Default 10
-#' @param dist_final target discrepancy threshold. Default 0. If zero, p_acc_min is used to determine stopping criteria.
+#' @param discrepancy_final target discrepancy threshold. Default 0. If zero, p_acc_min is used to determine stopping criteria.
 #' @param a_disc tuning parameter for adaptive selection of discrepancy threshold sequence.
 #' @param a_like tuning parameter for adaptive selection of likelihood ESS sequence
 #' @param c tuning parameter for choosing the number of MCMC iterations in move step. Default 0.01
 #' @param p_acc_min minimum acceptable acceptance rate in the MCMC interations before exit. Default 0.0001
 #' @param n_cores Number of cores desired to be used for sampling. Default set to 1 core (sequential sampling).
-#' @param output_prior logical. If set to TRUE, algorithm returns prior distributions of parameters ensemble of parameters. Default FALSE
-#' @param output_args logical. If set to TRUE, algorithm returns output from SMCfeatures::args_function for this problem
-#' @param output_discrepancy logical. If set to TRUE, algorithm returns discrepancy values
-#' @param output_matrix logical. If set to TRUE, algorithm returns interaction matrix and growthrates
 #' @return vector of transformed parameters
 #' @export
 SMCfeatures <- function(define_args=SMCfeatures::define_args_logistic_growth,
@@ -73,12 +71,14 @@ SMCfeatures <- function(define_args=SMCfeatures::define_args_logistic_growth,
   outputs <- SMCfeatures::SMC_combined(args,
                                        n_particles,
                                        mcmc_trials,
-                                       discrepancy_final,
                                        a_disc,
                                        a_like,
                                        c,
                                        p_acc_min,
                                        n_cores)
+
+  ## project using posteriors####
+
 
   return(outputs)
 }

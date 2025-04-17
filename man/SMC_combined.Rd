@@ -16,7 +16,23 @@ SMC_combined(
 )
 }
 \arguments{
-\item{args}{a list of arguments as returned by \link[EEMtoolbox]{args_function}}
+\item{args}{a list of arguments as returned by \link[SMCfeatures]{define_args_logistic_growth}}
+
+\item{n_particles}{Number of desired ensemble members. Default to 10000}
+
+\item{mcmc_trials}{number of MCMC steps to try before selecting appropriate number. Default 10}
+
+\item{a_disc}{tuning parameter for adaptive selection of discrepancy threshold sequence.}
+
+\item{a_like}{tuning parameter for adaptive selection of likelihood ESS sequence}
+
+\item{c}{tuning parameter for choosing the number of MCMC iterations in move step. Default 0.01}
+
+\item{p_acc_min}{minimum acceptable acceptance rate in the MCMC interations before exit. Default 0.0001}
+
+\item{n_cores}{Number of cores desired to be used for sampling. Default set to 1 core (sequential sampling).}
+
+\item{discrepancy_final}{target discrepancy threshold. Default 0. If zero, p_acc_min is used to determine stopping criteria.}
 }
 \value{
 list: sims=number of simulations

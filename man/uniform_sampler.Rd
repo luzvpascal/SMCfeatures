@@ -7,7 +7,7 @@
 uniform_sampler(args)
 }
 \arguments{
-\item{args}{a list of arguments as returned by \link[SMCfeatures]{args_function}}
+\item{args}{a list of arguments as returned by \link[SMCfeatures]{define_args_logistic_growth}}
 }
 \value{
 a vector of sampled parameters

@@ -1,9 +1,9 @@
-#' @title logLikelihood_logistic_growth
+#' @title Log-Likelihood function for the logistic growth case study
 #' @description
 #' Gaussian likelihood function
-#' @param parameters parameters
+#' @param parameters vector of parameters
 #' @param simulation list of simulation arguments
-#' @param args a list of arguments as returned by \link[SMCfeatures]{args_function}
+#' @param args a list of arguments as returned by \link[SMCfeatures]{define_args_logistic_growth}
 #' @return log likelihood
 #' @export
 log_likelihood_logistic_growth <- function(parameters,

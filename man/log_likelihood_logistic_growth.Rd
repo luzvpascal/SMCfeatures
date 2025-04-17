@@ -2,16 +2,16 @@
 % Please edit documentation in R/log_likelihood_logistic_growth.R
 \name{log_likelihood_logistic_growth}
 \alias{log_likelihood_logistic_growth}
-\title{logLikelihood_logistic_growth}
+\title{Log-Likelihood function for the logistic growth case study}
 \usage{
 log_likelihood_logistic_growth(parameters, simulation, args)
 }
 \arguments{
-\item{parameters}{parameters}
+\item{parameters}{vector of parameters}
 
 \item{simulation}{list of simulation arguments}
 
-\item{args}{a list of arguments as returned by \link[SMCfeatures]{args_function}}
+\item{args}{a list of arguments as returned by \link[SMCfeatures]{define_args_logistic_growth}}
 }
 \value{
 log likelihood

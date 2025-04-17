@@ -2,20 +2,22 @@
 % Please edit documentation in R/model_logistic_growth_data.R
 \name{model_logistic_growth_data}
 \alias{model_logistic_growth_data}
-\title{model_logistic_growth_data}
+\title{Model on data for logistic growth case study, on data points only}
 \usage{
 model_logistic_growth_data(parameters, simulation, args)
 }
 \arguments{
 \item{parameters}{vector of parameters (growth rate, capacity, initial abundance)}
 
-\item{simulation}{list of simulation arguments}
+\item{simulation}{list of simulation arguments, as returned by \link[SMCfeatures]{model_logistic_growth_constraint}}
 
-\item{args}{a list of arguments as returned by \link[SMCfeatures]{args_function}}
+\item{args}{a list of arguments as returned by \link[SMCfeatures]{define_args_logistic_growth}}
 }
 \value{
-simulation with added t_data, and y_data (output of simulation on input data)
+ist like object representing simulation outputs
+t_data: time steps for data (args$input_data)
+y_data: output of simulation on input data
 }
 \description{
-Simulate
+Simulate outputs of calibrated model, on data points only
 }

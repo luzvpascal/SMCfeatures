@@ -1,8 +1,11 @@
 #' @title model_logistic_growth_constraint
 #' @description
 #' Simulate
-#' @param parameters vector of parameters (growth rate, capacity, initial abundance)
-#' @return simulation with added t_const, and y_const (output of simulation on input t_const)
+#' @param parameters vector of parameters (growth rate, capacity, initial abundance, sigma)
+#' @return list like object representing simulation outputs
+#' t_const: vector of time constraints (time step 5 and 50)
+#' y_const: output of simulation on input t_const
+#' K: carrying capacity
 #' @export
 model_logistic_growth_constraint <- function(parameters){
   #Inputs parameters and outputs a simulation

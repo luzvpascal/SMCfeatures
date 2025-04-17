@@ -2,7 +2,7 @@
 % Please edit documentation in R/define_args_logistic_growth.R
 \name{define_args_logistic_growth}
 \alias{define_args_logistic_growth}
-\title{Arguments for SMCfeatures}
+\title{Arguments defining the logistic growth case study}
 \usage{
 define_args_logistic_growth()
 }
@@ -10,5 +10,5 @@ define_args_logistic_growth()
 A list of arguments defining the problem.
 }
 \description{
-Extract arguments necessary to run SMCfeatures
+Extract arguments necessary to run the logistic growth case study
 }

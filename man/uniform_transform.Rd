@@ -9,7 +9,7 @@ uniform_transform(theta, args)
 \arguments{
 \item{theta}{vector of parameters to transform}
 
-\item{args}{a list of arguments as returned by \link[SMCfeatures]{args_function}}
+\item{args}{a list of arguments as returned by \link[SMCfeatures]{define_args_logistic_growth}}
 }
 \value{
 vector of transformed parameters

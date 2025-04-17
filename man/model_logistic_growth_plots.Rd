@@ -2,20 +2,20 @@
 % Please edit documentation in R/model_logistic_growth_plots.R
 \name{model_logistic_growth_plots}
 \alias{model_logistic_growth_plots}
-\title{model_logistic_growth_plot}
+\title{Model on data for logistic growth case study}
 \usage{
 model_logistic_growth_plots(parameters, simulation, args)
 }
 \arguments{
 \item{parameters}{vector of parameters (growth rate, capacity, initial abundance)}
 
-\item{simulation}{list of simulation arguments}
+\item{simulation}{list of simulation arguments, as returned by \link[SMCfeatures]{model_logistic_growth_constraint}}
 
-\item{args}{a list of arguments as returned by \link[SMCfeatures]{args_function}}
+\item{args}{a list of arguments as returned by \link[SMCfeatures]{define_args_logistic_growth}}
 }
 \value{
-simulation with added time, and y (output of simulation)
+list like object of simulation with added time, and y (output of simulation)
 }
 \description{
-Simulate
+Simulate outputs of calibrated model for the logistic growth case study
 }

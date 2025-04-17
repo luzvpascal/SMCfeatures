@@ -5,7 +5,7 @@
 #' @param oldgamma old temperature
 #' @param part_w particule weights
 #' @param part_loglike particule log likelihood
-#' @return A list of arguments defining the problem.
+#' @return Effective sample size
 #' @export
 calc_ess <- function(newgamma,oldgamma,part_w,part_loglike){
   #define global arguments

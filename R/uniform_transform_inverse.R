@@ -2,7 +2,7 @@
 #' @description
 #' This function uses a reverts the transformation for uniform distributions
 #' @param theta_trans vector of parameters to transformed back
-#' @param args a list of arguments as returned by \link[EEMtoolbox]{args_function}
+#' @param args a list of arguments as returned by \link[SMCfeatures]{define_args_logistic_growth}
 #' @return vector of transformed parameters
 #' @export
 #'

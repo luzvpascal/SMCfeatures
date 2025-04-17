@@ -2,7 +2,7 @@
 #' @description
 #' Uniform sampling of parameters between lower and upper bounds defined in args
 #'
-#' @param args a list of arguments as returned by \link[SMCfeatures]{args_function}
+#' @param args a list of arguments as returned by \link[SMCfeatures]{define_args_logistic_growth}
 #' @return a vector of sampled parameters
 #' @export
 #' @import stats

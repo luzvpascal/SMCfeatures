@@ -1,7 +1,15 @@
 #' @title Generation of model ensembles Sequential Monte Carlo - Approximate Bayesian Computation.
 #' @description
 #' Generation of model ensembles using Adaptive sequential Monte Carlo for approximate Bayesian computation
-#' @param args a list of arguments as returned by \link[EEMtoolbox]{args_function}
+#' @param args a list of arguments as returned by \link[SMCfeatures]{define_args_logistic_growth}
+#' @param n_particles Number of desired ensemble members. Default to 10000
+#' @param mcmc_trials number of MCMC steps to try before selecting appropriate number. Default 10
+#' @param discrepancy_final target discrepancy threshold. Default 0. If zero, p_acc_min is used to determine stopping criteria.
+#' @param a_disc tuning parameter for adaptive selection of discrepancy threshold sequence.
+#' @param a_like tuning parameter for adaptive selection of likelihood ESS sequence
+#' @param c tuning parameter for choosing the number of MCMC iterations in move step. Default 0.01
+#' @param p_acc_min minimum acceptable acceptance rate in the MCMC interations before exit. Default 0.0001
+#' @param n_cores Number of cores desired to be used for sampling. Default set to 1 core (sequential sampling).
 #' @return list: sims=number of simulations
 #' part_vals=parameter values
 #' part_s=discrepancy value
@@ -25,6 +33,9 @@ SMC_combined <- function(args,
   ###########################################################
   # Prior sample -- Initialise ##############################
   ###########################################################
+
+  print('Begin sampling from prior distribution')
+
   cl <- parallel::makeCluster(n_cores)
   doParallel::registerDoParallel(cl)
   #sample priors
@@ -64,7 +75,7 @@ SMC_combined <- function(args,
   param_w = rep(1,n_particles)/n_particles # particle weightings
 
   print(paste0('Initial constraint acceptance: ',
-               sum(param_disc<=discrepancy_final),
+               sum(param_disc<=args$discrepancy_final),
                " of ",
                n_particles,
                " particles"))
@@ -80,7 +91,11 @@ SMC_combined <- function(args,
   ## Sequential distributions
   #Run until likelihood is fully integrated and constraints are met
 
-  while(gamma_t < 1 | dist_max > discrepancy_final){
+  if (gamma_t < 1 | dist_max > args$discrepancy_final){
+    print('Begin SMC-ABC search method')
+  }
+
+  while(gamma_t < 1 | dist_max > args$discrepancy_final){
     SMC_count  <- SMC_count+1 #track number of SMC steps
 
     #########################################################################################################
@@ -108,45 +123,43 @@ SMC_combined <- function(args,
                                            param_loglike_weighted_by_discrepancy_threshold)
     #if ESS at posterior is acceptable (above the minimum amount ESS)
     if (ess_posterior > ESS){
-      newgamma = 1 #sample the posterior
+      newgamma <- 1 #sample the posterior
     } else{
       #find the temperature (gamma_t) at which the effective sample size is equal to the threshold ESS
-      newgamma = pracma::fzero(function(newgamma){calc_ess(newgamma,
-                                            gamma_t,
-                                            param_w_weighted_by_discrepancy_threshold,
-                                            param_loglike_weighted_by_discrepancy_threshold)-ESS},
-                       gamma_t)
+      solution <- pracma::fzero(function(x){SMCfeatures::calc_ess(x,
+                                                     gamma_t,
+                                                     param_w_weighted_by_discrepancy_threshold,
+                                                     param_loglike_weighted_by_discrepancy_threshold)-ESS},
+                                gamma_t)
+      newgamma <- solution$x
     }
 
     #calculate particle likelihood weights for new temperature (gamma)
-    log_particle_w = log(param_w) +(newgamma - gamma_t)*param_loglike
-    log_particle_w = log_particle_w - max(log_particle_w) #numerically stabilise
-    param_w = exp(log_particle_w) #return from log space
-    param_w = param_w/sum(param_w) #normalise weights
+    log_particle_w <- log(param_w) +(newgamma - gamma_t)*param_loglike
+    log_particle_w <- log_particle_w - max(log_particle_w) #numerically stabilise
+    param_w <- exp(log_particle_w) #return from log space
+    param_w <- param_w/sum(param_w) #normalise weights
 
     #set weights to 0 if discrepancy is above tolerance
-    param_w(param_disc>dist_next) = 0
-    param_w = param_w/sum(param_w) #normalise weights
-
+    param_w[param_disc>dist_next] <- 0
+    param_w <- param_w/sum(param_w) #normalise weights
 
     #PREPARE TO RESAMPLE  ###################################
 
     #print the new discrepancy threshold and likelihood annealing temperature
-    print(paste0('Discrepancy threshold is ',  dist_next, '(aiming for ', args.discrepancy_final, ")"))
-    print(paste0("Annealing temperature is ", newgamma, "(aiming for 1.00)"))
+    print(paste0('Discrepancy threshold is ',  round(dist_next, digits = 5), ' (aiming for ', args$discrepancy_final, ")"))
+    print(paste0("Annealing temperature is ", round(newgamma, digits = 5), " (aiming for 1.00)"))
 
     #apply transform
-    param_vals_transformed = args$trans_f(param_vals, args)
-    param_vals = zeros(size(param_vals));
+    param_vals_transformed <- args$trans_f(param_vals, args)
+    param_vals <- matrix(0,ncol=ncol(param_vals), nrow=nrow(param_vals))
 
-    #calc cov for random walk MH-MCMC step
-    cov_matrix = (2.38^2)*cov(param_vals_transformed)/dim(param_vals_transformed)[2]
 
     ###########################################################################
     ## -----RESAMPLE-----    ##################################################
     ###########################################################################
     #duplicate good particles
-    r <- sample(seq(args$n_particles),args$n_particles, replace=TRUE, prob=param_w) #duplicate good ones
+    r <- sample(seq(n_particles),n_particles, replace=TRUE, prob=param_w) #duplicate good ones
 
     param_vals_transformed <- param_vals_transformed[r,]
     param_loglike <- param_loglike[r]
@@ -154,71 +167,32 @@ SMC_combined <- function(args,
     param_disc <- param_disc[r]
 
     #reset weights
-    param_w = rep(1,args$n_particles)/args$n_particles # particle weightings
+    param_w = rep(1,n_particles)/n_particles # particle weightings
 
+    #calc cov for random walk MH-MCMC step #check where this goes?
+    cov_matrix = (2.38^2)*cov(param_vals_transformed)/dim(param_vals_transformed)[2]
 
     ###########################################################################
     ## -----MOVE-----    ##################################################
     ###########################################################################
 
     # MCMC MOVE STEPS
-    acc_counter = rep(0, args$n_particles) #track particle move acceptance
+    acc_counter = rep(0, n_particles) #track particle move acceptance
 
     #initial trial of MCMC iterations####
     #parallel for loop
-    cl <- parallel::makeCluster(args$n_cores)
+    cl <- parallel::makeCluster(n_cores)
     doParallel::registerDoParallel(cl)
 
-    mcmc_outcome <- foreach::foreach(i=1:args$n_particles,
-                     .packages =c('SMCfeatures')) %dopar% {
-                       SMCfeatures::MCMC_combined(i,
-                                                  mcmc_steps,
-                                                  params_transformed,
-                                                  cov_matrix,
-                                                  args,
-                                                  disc,
-                                                  acc_count,
-                                                  dist_next,
-                                                  sims,
-                                                  loglike,
-                                                  newgamma)
-                     }
-    parallel::stopCluster(cl)#stop cluster
-    rm(cl)
-
-    ## check dimensions here####
-    param_vals_transformed <- matrix(unlist(lapply(mcmc_outcome, `[[`, 1)),
-                                    nrow=length(mcmc_outcome), byrow = TRUE)
-
-    param_disc <- (unlist(lapply(mcmc_outcome, `[[`, 2)))
-
-    acc_counter <- (unlist(lapply(mcmc_outcome, `[[`, 3)))
-
-    param_sims <- matrix(unlist(lapply(mcmc_outcome, `[[`, 4)),
-                          nrow=length(mcmc_outcome), byrow = TRUE)
-
-    param_loglike <- (unlist(lapply(mcmc_outcome, `[[`, 5)))
-
-    # determine number of MCMC iterations to perform
-    acc_rate <- sum(acc_counter)/(mcmc_trials*(args$n_particles)) #calculate acceptance rate
-    mcmc_iters <- floor(log(c)/log(1-acc_rate)+1) #predict how many mcmc steps are needed to get approx unchanged paricles c#
-
-    #do the remaining MCMC iterations####
-    cl <- parallel::makeCluster(args$n_cores)
-    doParallel::registerDoParallel(cl)
-
-    mcmc_outcome <- foreach::foreach(i=1:args$n_particles,
+    mcmc_outcome <- foreach::foreach(i=1:n_particles,
                                      .packages =c('SMCfeatures')) %dopar% {
-                                       SMCfeatures::MCMC_combined(i,
-                                                                  mcmc_steps,
-                                                                  params_transformed,
-                                                                  cov_matrix,
-                                                                  args,
-                                                                  disc,
-                                                                  acc_count,
+                                       SMCfeatures::MCMC_combined(mcmc_trials,
+                                                                  params_transformed[i,],
+                                                                  param_disc[i],
+                                                                  acc_counter[i],
                                                                   dist_next,
-                                                                  sims,
-                                                                  loglike,
+                                                                  param_sims[[i]],
+                                                                  param_loglike[i],
                                                                   newgamma)
                                      }
     parallel::stopCluster(cl)#stop cluster
@@ -232,8 +206,41 @@ SMC_combined <- function(args,
 
     acc_counter <- (unlist(lapply(mcmc_outcome, `[[`, 3)))
 
-    param_sims <- matrix(unlist(lapply(mcmc_outcome, `[[`, 4)),
-                         nrow=length(mcmc_outcome), byrow = TRUE)
+    param_sims <- lapply(mcmc_outcome, `[[`, 4)
+
+    param_loglike <- (unlist(lapply(mcmc_outcome, `[[`, 5)))
+
+    # determine number of MCMC iterations to perform
+    acc_rate <- sum(acc_counter)/(mcmc_trials*n_particles) #calculate acceptance rate
+    mcmc_iters <- floor(log(c)/log(1-acc_rate)+1) #predict how many mcmc steps are needed to get approx unchanged paricles c#
+
+    #do the remaining MCMC iterations####
+    cl <- parallel::makeCluster(n_cores)
+    doParallel::registerDoParallel(cl)
+
+    mcmc_outcome <- foreach::foreach(i=1:n_particles,
+                                     .packages =c('SMCfeatures')) %dopar% {
+                                       SMCfeatures::MCMC_combined(mcmc_iters-mcmc_trials,
+                                                                  params_transformed[i,],
+                                                                  param_disc[i],
+                                                                  acc_counter[i],
+                                                                  dist_next,
+                                                                  param_sims[[i]],
+                                                                  param_loglike[i],
+                                                                  newgamma)
+                                     }
+    parallel::stopCluster(cl)#stop cluster
+    rm(cl)
+
+    ## check dimensions here####
+    param_vals_transformed <- matrix(unlist(lapply(mcmc_outcome, `[[`, 1)),
+                                     nrow=length(mcmc_outcome), byrow = TRUE)
+
+    param_disc <- (unlist(lapply(mcmc_outcome, `[[`, 2)))
+
+    acc_counter <- (unlist(lapply(mcmc_outcome, `[[`, 3)))
+
+    param_sims <- lapply(mcmc_outcome, `[[`, 4)
 
     param_loglike <- (unlist(lapply(mcmc_outcome, `[[`, 5)))
 
@@ -246,14 +253,13 @@ SMC_combined <- function(args,
 
     #convert back to theta for reweighting
     param_vals <- args$trans_finv(param_vals_transformed,args)
-    param_vals_transformed <- rep(0, length(param_vals_transformed))##check dimensions
 
     #update the temperature and discrepancy max
     gamma_t = newgamma
     dist_max = max(param_disc)
 
     # calc percentage acceptance
-    p_acc <- sum(acc_counter)/(num_mcmc_iters*args$n_particles)
+    p_acc <- sum(acc_counter)/(num_mcmc_iters*n_particles)
 
     if (p_acc < p_acc_min){ # if acceptance is too low, then bail
       print('Getting out as MCMC acceptance rate is below acceptable threshold')
@@ -262,7 +268,25 @@ SMC_combined <- function(args,
   }
 
   print('SMC algorithm complete')
+
+  ## simulate
   posterior <- param_vals
+
+  cl <- parallel::makeCluster(n_cores)
+  doParallel::registerDoParallel(cl)
+
+  param_sims_posterior <- foreach::foreach(i = 1:n_particles) %dopar% {
+    args$simulate_plots(posterior[i,],param_sims[[i]],args)
+  }
+  param_sims_prior <- foreach::foreach(i = 1:n_particles) %dopar% {
+    args$simulate_plots(prior[i,],param_sims[[i]],args)
+  }
+  parallel::stopCluster(cl)#stop cluster
+  rm(cl)
+
+
   return(list(posterior=posterior,
-              prior=prior))
+              prior=prior,
+              param_sims_posterior=param_sims_posterior,
+              param_sims_prior=param_sims_prior))
 }

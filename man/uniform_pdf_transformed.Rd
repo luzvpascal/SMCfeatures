@@ -13,5 +13,5 @@ uniform_pdf_transformed(theta_trans)
 vector of transformed parameters
 }
 \description{
-A short description...
+Density of transformed uniform distribution
 }

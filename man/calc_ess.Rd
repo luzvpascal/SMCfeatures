@@ -16,7 +16,7 @@ calc_ess(newgamma, oldgamma, part_w, part_loglike)
 \item{part_loglike}{particule log likelihood}
 }
 \value{
-A list of arguments defining the problem.
+Effective sample size
 }
 \description{
 Calculates the effective sample size

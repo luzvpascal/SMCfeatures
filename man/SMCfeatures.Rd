@@ -19,11 +19,17 @@ SMCfeatures(
 )
 }
 \arguments{
-\item{define_args}{summary statistic (discrepancy measure). Default discrepancy_logistic_growth}
+\item{define_args}{function describing the arguments of the case study. Defaul \link[SMCfeatures]{define_args_logistic_growth}}
+
+\item{include_expert_constraints}{boolean indicating whether expert ellicited constraints should be included. Default TRUE}
+
+\item{include_data_constraints}{boolean indicating whether data should be included. Default TRUE}
 
 \item{n_particles}{Number of desired ensemble members. Default to 10000}
 
 \item{mcmc_trials}{number of MCMC steps to try before selecting appropriate number. Default 10}
+
+\item{discrepancy_final}{target discrepancy threshold. Default 0. If zero, p_acc_min is used to determine stopping criteria.}
 
 \item{a_disc}{tuning parameter for adaptive selection of discrepancy threshold sequence.}
 
@@ -34,16 +40,6 @@ SMCfeatures(
 \item{p_acc_min}{minimum acceptable acceptance rate in the MCMC interations before exit. Default 0.0001}
 
 \item{n_cores}{Number of cores desired to be used for sampling. Default set to 1 core (sequential sampling).}
-
-\item{dist_final}{target discrepancy threshold. Default 0. If zero, p_acc_min is used to determine stopping criteria.}
-
-\item{output_prior}{logical. If set to TRUE, algorithm returns prior distributions of parameters ensemble of parameters. Default FALSE}
-
-\item{output_args}{logical. If set to TRUE, algorithm returns output from SMCfeatures::args_function for this problem}
-
-\item{output_discrepancy}{logical. If set to TRUE, algorithm returns discrepancy values}
-
-\item{output_matrix}{logical. If set to TRUE, algorithm returns interaction matrix and growthrates}
 }
 \value{
 vector of transformed parameters

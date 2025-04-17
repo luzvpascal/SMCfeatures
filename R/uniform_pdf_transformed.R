@@ -1,6 +1,6 @@
 #' @title density of transformed uniform distribution
 #' @description
-#' A short description...
+#' Density of transformed uniform distribution
 #'
 #' @param theta_trans vector of parameters to transform
 #' @return vector of transformed parameters

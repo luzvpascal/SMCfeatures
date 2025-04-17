@@ -9,7 +9,7 @@ uniform_transform_inverse(theta_trans, args)
 \arguments{
 \item{theta_trans}{vector of parameters to transformed back}
 
-\item{args}{a list of arguments as returned by \link[EEMtoolbox]{args_function}}
+\item{args}{a list of arguments as returned by \link[SMCfeatures]{define_args_logistic_growth}}
 }
 \value{
 vector of transformed parameters

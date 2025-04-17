@@ -1,6 +1,6 @@
-#' @title Arguments for SMCfeatures
+#' @title Arguments defining the logistic growth case study
 #' @description
-#' Extract arguments necessary to run SMCfeatures
+#' Extract arguments necessary to run the logistic growth case study
 #' @return A list of arguments defining the problem.
 #' @export
 define_args_logistic_growth <- function(){

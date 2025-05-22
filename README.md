@@ -82,8 +82,10 @@ We can combine our approach with traditional SMC methods to estimate. We use a G
 We assume that we have a dataset $\mathcal{D}(I, O)$, where $I$ are the data inputs and $O$ the data outputs. The Gaussian log-likelihood function is thus:
 
 ```math
-\mathcal{L}(I, O) = - |D|\log(\sigma) - \sum_i \frac{(O_i - y(I_i))^2}{2\sigma^2}
+\mathcal{L}(I, O) = - |D|\log(\sigma) - \sum_i \frac{(O_i - y(I_i))^2}{2\sigma^2},
 ```
+where $y(I_i)$ is the output of the model defined by parameters $r$, $K$ and $y_0$.
+
 
 ## Coding the logistic growth rate example into R
 
@@ -114,10 +116,10 @@ model_logistic_growth <- function(parameters,
   return(y_data)
 }
 ```
-
-This function 
+This function inputs a set of parameters (here $r$, $K$ and $y_0$) and a vector of inputs (here a vector of time steps). The output of this function is the output of the model on input data as a vector.
 
 ### Step 2: Defining the discrepancy function
+
 
 ### Step 3: Defining the likelihood function
 

@@ -6,6 +6,7 @@
     - [Logistic growth model](#logistic-growth-model)
     - [Non-empirical constraints](#non-empirical-constraints)
     - [Combining data with non-empirical constraints](#combining-data-with-non-empirical-constraints)
+  - [Coding the logistic growth rate example into R](#coding-the-logistic-growth-rate-example-into-R)
 
 # Introduction
 
@@ -53,6 +54,16 @@ y(t) = \frac{Ky_0}{y_0+(K-y_0)e^{-rt}}.
 Three parameters are uncertain: $r$, $K$ and $y_0$.
 
 ### Non-empirical constraints
+
+We assume that experts have some non-empirical constraints, for example derived from expert knowledge. After a disturbance:
+- "coral cover should be less than 10% within the first 5 years"
+- "coral cover should be fully recovered within 1% of the carrying capacity within 50 years"
+
+These constraints can be expressed mathematically as:
+```math
+y(5)=\frac{Ky_0}{y_0+(K-y_0)e^{-5r}} \leq 10\\
+y(50)=\frac{Ky_0}{y_0+(K-y_0)e^{-50r}} \geq 0.99*K
+```
 
 ### Combining data with non-empirical constraints
 

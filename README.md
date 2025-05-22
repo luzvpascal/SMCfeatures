@@ -61,12 +61,29 @@ We assume that experts have some non-empirical constraints, for example derived 
 
 These constraints can be expressed mathematically as:
 ```math
-y(5)=\frac{Ky_0}{y_0+(K-y_0)e^{-5r}} \leq 10\\
-y(50)=\frac{Ky_0}{y_0+(K-y_0)e^{-50r}} \geq 0.99*K
+y(5)=\frac{Ky_0}{y_0+(K-y_0)e^{-5r}} \leq 10, \quad \quad y(50)=\frac{Ky_0}{y_0+(K-y_0)e^{-50r}} \geq K-1.
 ```
+
+To include these constraints into our approximate Bayesian computation algorithm, we define a discrepancy function $\rho$:
+```math
+\rho = \rho_5 + \rho_{50}
+```
+where
+```math
+\rho_5 = \max(0, y(5) - 10) \quad \text{and} \quad \rho_{50}=\max(0, 0.99*K - y(50)).
+```
+
+$\rho_5$ measures the discrepancy of coral cover exceed 10% at year 5, and $\rho_{50}$ the gap between $K-1$ and the coral cover at year 50.
+
 
 ### Combining data with non-empirical constraints
 
+We can combine our approach with traditional SMC methods to estimate. We use a Gaussian likelihood function.
+We assume that we have a dataset $\mathcal{D}(I, O)$, where $I$ are the data inputs and $O$ the data outputs. The Gaussian log-likelihood function is thus:
+
+```math
+\mathcal{L}(I, O) = - |D|*\log(\sigma) - \sum_i \frac{(O_i - y(I_i, r,K,y_0))^2}{2\sigma**2}
+```
 
 ## Coding the logistic growth rate example into R
 

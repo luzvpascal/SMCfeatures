@@ -82,7 +82,7 @@ We can combine our approach with traditional SMC methods to estimate. We use a G
 We assume that we have a dataset $\mathcal{D}(I, O)$, where $I$ are the data inputs and $O$ the data outputs. The Gaussian log-likelihood function is thus:
 
 ```math
-\mathcal{L}(I, O) = - |D|*\log(\sigma) - \sum_i \frac{(O_i - y(I_i, r,K,y_0))^2}{2\sigma**2}
+\mathcal{L}(I, O) = - |D|\log(\sigma) - \sum_i \frac{(O_i - y(I_i))^2}{2\sigma^2}
 ```
 
 ## Coding the logistic growth rate example into R

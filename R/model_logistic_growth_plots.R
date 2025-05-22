@@ -17,8 +17,9 @@ model_logistic_growth_plots <- function(parameters,
   y0 <- parameters[3]
 
   # Simulation details
-  simulation$t <- seq(0, max(args$input_data), length.out=100)
+  simulation$t <- seq(0, 50, length.out=100)
   simulation$y <- (K*y0)/(y0+(K-y0)*exp(-simulation$t*r))
+
   return(simulation)
 }
 

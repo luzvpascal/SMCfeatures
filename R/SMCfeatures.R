@@ -1,22 +1,48 @@
 #' @title SMCfeatures
 #' @description
 #' Main function for any parameterisation of expert elicited constraints
-#' @param define_args function describing the arguments of the case study. Defaul \link[SMCfeatures]{define_args_logistic_growth}
+#' @param param_labels - the names of the parameters in latex style
+#' @param lower - an array of lower parameter bounds
+#' @param upper - an array of upper parameter bounds
+#' @param simulate_model - a function that simulates the model outputs needed to assess if constraints are met
+#' @param calculate_discrepancy - a function that calculates discrepancy score
+#' @param simulate_constraint - a function that simulates the model outputs needed to assess if constraints are met. Default \link[SMCfeatures]{model_constraint}.
+#' @param simulate_data - a function that simulates the model outputs needed to assess likelihood of producing data
+#' @param input_data - a vector of input data. Default NA.
+#' @param output_data - a vector of output data. Default NA.
+#' @param calculate_log_likelihood log likelihood function. Default \link[SMCfeatures]{log_likelihood_Gaussian}.
 #' @param include_expert_constraints boolean indicating whether expert ellicited constraints should be included. Default TRUE
-#' @param include_data_constraints boolean indicating whether data should be included. Default TRUE
+#' @param include_data_constraints boolean indicating whether data should be included. Default TRUE. If input_data or output_data is NA, then include_data_constraints is set to FALSE
+#' @param prior_sampler sampling function that generates random vectors from the joint prior distribution. Default \link[SMCfeatures]{uniform_sampler}.
+#' @param trans_f transform of prior parameter space to ensure unbounded support for MCMC sampling. Default \link[SMCfeatures]{uniform_transform}
+#' @param trans_finv inverse of trans_f function. Default \link[SMCfeatures]{uniform_transform_inverse}
+#' @param prior_pdf joint probability density function. Default \link[SMCfeatures]{uniform_pdf_transformed}
 #' @param n_particles Number of desired ensemble members. Default to 10000
 #' @param mcmc_trials number of MCMC steps to try before selecting appropriate number. Default 10
 #' @param discrepancy_final target discrepancy threshold. Default 0. If zero, p_acc_min is used to determine stopping criteria.
-#' @param a_disc tuning parameter for adaptive selection of discrepancy threshold sequence.
-#' @param a_like tuning parameter for adaptive selection of likelihood ESS sequence
+#' @param a_disc tuning parameter for adaptive selection of discrepancy threshold sequence. Default 0.6
+#' @param a_like tuning parameter for adaptive selection of likelihood ESS sequence. Default 0.3
 #' @param c tuning parameter for choosing the number of MCMC iterations in move step. Default 0.01
 #' @param p_acc_min minimum acceptable acceptance rate in the MCMC interations before exit. Default 0.0001
 #' @param n_cores Number of cores desired to be used for sampling. Default set to 1 core (sequential sampling).
 #' @return vector of transformed parameters
 #' @export
-SMCfeatures <- function(define_args=SMCfeatures::define_args_logistic_growth,
+SMCfeatures <- function(parameter_labels,
+                        upper,
+                        lower,
+                        simulate_model,
+                        calculate_discrepancy,
+                        simulate_constraint = SMCfeatures::model_constraint,
+                        simulate_data = SMCfeatures::model_data,
+                        input_data=NA,
+                        output_data=NA,
+                        calculate_log_likelihood=SMCfeatures::log_likelihood_Gaussian,
                         include_expert_constraints=TRUE,
                         include_data_constraints=TRUE,
+                        sampler=SMCfeatures::uniform_sampler,
+                        trans_f=SMCfeatures::uniform_transform,
+                        trans_finv=SMCfeatures::uniform_transform_inverse,
+                        pdf=SMCfeatures::uniform_pdf_transformed,
                         n_particles=10000,
                         mcmc_trials=10,
                         discrepancy_final=0,
@@ -38,21 +64,37 @@ SMCfeatures <- function(define_args=SMCfeatures::define_args_logistic_growth,
   }
 
   # Defining special arguments ####
+  args <- list()
+
+  ## global arguments ####
+  args$parameter_labels <- parameter_labels
+  args$upper <- upper
+  args$lower <- lower
+  args$n_params <- length(args$upper)
+
+  # prior functions
+  args$sampler <- sampler
+  args$trans_f <- trans_f
+  args$trans_finv <- trans_finv
+  args$prior_pdf <- prior_pdf
+
+  #model simulation
+  args$simulate_model <- simulate_model #inputs (parameters,inputs), returns [simulation]
+  args$simulate_constraint <- SMCfeatures::model_constraint #inputs (parameters,args), returns [simulation]
+  args$simulate_data <- SMCfeatures::model_data #inputs (parameters,args,simulation), returns [simulation]
+
+  #discrepancy
+  args$calculate_discrepancy <- calculate_discrepancy
+
+  #data and log likelihood
+  args$input_data <- input_data#times
+  args$output_data <- output_data#coral cover observation
+  args$calculate_log_likelihood  <- calculate_log_likelihood
+
 
   #PRIOR - define the prior distribution for the modelling scenario
   # This function returns "args" a list that contains:
-  # lower - an array of lower parameter bounds
-  # upper - an array of upper parameter bounds
-  # prior_sampler - a function that samples a parameter set from the prior
-  # trans_f - a function that transforms the prior into a more manageable space
-  # trans_f_inv - a function that back transforms the prior into its original space
-  # prior_pdf - the probability density of the transform space
-  # param_labels - the names of the parameters in latex style
-  # n_params - the number of model parameters
-  # simulate_constraint - a function that simulates the model outputs needed to assess if constraints are met
-  # simulate_data - a function that simulates the model outputs needed to assess likelihood of producing data
-  # simulate_plots - a function that simulates the model outputs needed to plot results
-  args <- define_args()
+
 
   # #all other relevant parameters
   args$include_expert_constraints <- include_expert_constraints

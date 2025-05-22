@@ -8,20 +8,15 @@
 #' t_data: time steps for data (args$input_data)
 #' y_data: output of simulation on input data
 #' @export
-model_logistic_growth_data <- function(parameters,
-                                       simulation,
-                                       args){
+model_on_data <- function(parameters,
+                         simulation,
+                         args){
   # likelihood needs data at all time points
   #Inputs parameters and outputs a simulation
 
-  # Extract information
-  r <- parameters[1]
-  K <- parameters[2]
-  y0 <- parameters[3]
-
   # Simulation details
   simulation$t_data <- args$input_data
-  simulation$y_data <- (K*y0)/(y0+(K-y0)*exp(-simulation$t_data*r))
+  simulation$y_data <- args$model_simulation(parameters,
+                                             simulation$t_data)
   return(simulation)
 }
-

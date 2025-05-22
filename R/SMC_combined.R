@@ -153,7 +153,6 @@ SMC_combined <- function(args,
 
     #apply transform
     param_vals_transformed <- args$trans_f(param_vals, args)
-    param_vals <- matrix(0,ncol=ncol(param_vals), nrow=nrow(param_vals))
 
 
     ###########################################################################
@@ -170,7 +169,7 @@ SMC_combined <- function(args,
     #reset weights
     param_w = rep(1,n_particles)/n_particles # particle weightings
 
-    #calc cov for random walk MH-MCMC step #check where this goes?
+    #calc cov for random walk MH-MCMC step
     cov_matrix = (2.38^2)*cov(param_vals_transformed)/dim(param_vals_transformed)[2]
 
     ###########################################################################

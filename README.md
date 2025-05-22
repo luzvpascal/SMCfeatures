@@ -1,9 +1,11 @@
 # Table of Contents
-[Introduction](#introduction)
-[Installation](#installation)
-[Getting started with a simple example](#getting-started-with-a-simple-example)
-[Mathematical formalism](#mathematical-formalism)
-[Logistic growth model](#logistic-growth-model) 
+- [Introduction](#introduction)
+- [Installation](#installation)
+- [Getting started with a simple example](#getting-started-with-a-simple-example)
+  - [Mathematical formalism](#mathematical-formalism)
+    - [Logistic growth model](#logistic-growth-model)
+    - [Non-empirical constraints](#non-empirical-constraints)
+    - [Combining data with non-empirical constraints](#combining-data-with-non-empirical-constraints)
 
 # Introduction
 
@@ -50,9 +52,9 @@ y(t) = \frac{Ky_0}{y_0+(K-y_0)e^{-rt}}.
 
 Three parameters are uncertain: $r$, $K$ and $y_0$.
 
-### Non-empirical constraints: Expert elicited observations
+### Non-empirical constraints
 
-### Empirical constraints: combining data with non-empirical constraints
+### Combining data with non-empirical constraints
 
 
 ## Coding the logistic growth rate example into R

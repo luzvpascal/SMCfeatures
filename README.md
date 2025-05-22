@@ -1,4 +1,14 @@
-# SMCfeatures
+# Table of Contents
+[Introduction](#introduction)
+[Installation](#installation)
+[Getting started with a simple example](#getting-started-with-a-simple-example)
+[Mathematical formalism](#mathematical-formalism)
+[Logistic growth model](#logistic-growth-model) 
+
+# Introduction
+
+This R package is the implements the work from Vollert et al., 2025.
+
 
 # Installation
 
@@ -23,7 +33,9 @@ install_github("luzvpascal/SMCfeatures",
 
 # Getting started with a simple example
 
-## Mathematical model
+## Mathematical formalism
+
+### Logistic growth model
 We consider a simple logistic growth example, representing the evolution of coral growth after a disturbance. The logistic growth model has the following shape:
 
 ```math
@@ -38,7 +50,14 @@ y(t) = \frac{Ky_0}{y_0+(K-y_0)e^{-rt}}.
 
 Three parameters are uncertain: $r$, $K$ and $y_0$.
 
-## Step 1: Defining the model function into R
+### Non-empirical constraints: Expert elicited observations
+
+### Empirical constraints: combining data with non-empirical constraints
+
+
+## Coding the logistic growth rate example into R
+
+### Step 1: Defining the model function
 
 The first step of our approach is to define a function that simulates the model for any parameters $r$, $K$ and $y_0$. For the logistic growth example, this function is already implemented in the package, as `model_logistic_growth`.
 ```r
@@ -66,5 +85,12 @@ model_logistic_growth <- function(parameters,
 }
 ```
 
-This 
-```
+This function 
+
+### Step 2: Defining the discrepancy function
+
+### Step 3: Defining the likelihood function
+
+### Step 4: Using data
+
+### Step 5: Calling the main function `SMCfeatures`

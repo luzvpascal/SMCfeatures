@@ -45,8 +45,9 @@ MCMC_combined <- function(args,
     }
 
     #find proposal discrepancy
-    sims_prop <- args$simulate_constraint(prop)
-    disc_prop <- args$calculate_discrepancy(sims_prop, args)
+    sims_disc_prop <- args$calculate_discrepancy(prop, args)
+    sims_prop <- sims_disc_prop[[1]]
+    disc_prop <-  sims_disc_prop[[2]]
 
     # ABC part of the acceptance probability
     # reject if discrepancy is above threshold

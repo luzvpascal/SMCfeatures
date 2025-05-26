@@ -2,18 +2,20 @@
 % Please edit documentation in R/discrepancy_logistic_growth.R
 \name{discrepancy_logistic_growth}
 \alias{discrepancy_logistic_growth}
-\title{Discrepancy function}
+\title{Simulate constraints and calculate discrepancy function}
 \usage{
-discrepancy_logistic_growth(simulation, args)
+discrepancy_logistic_growth(parameters, args)
 }
 \arguments{
-\item{simulation}{list of simulation arguments}
+\item{parameters}{a vector of parameters. Here parameters must be input in this order r, K, y0 and sigma}
 
-\item{args}{a list of arguments as returned by \link[SMCfeatures]{args_function}}
+\item{args}{a list of arguments as defined in the function \link[SMCfeatures]{SMCfeatures}}
 }
 \value{
-summary statistic (discrepancy measure).
+a list with
+simulation list like object with t_const, y_const, K.
+a summary statistic (discrepancy measure).
 }
 \description{
-Discrepancy measure
+Simulate constraints and calculate discrepancy function. In this example, there are two non-empirical constraints: at year 5, the coral cover must be lower that 10\%, and at year 50, the coral cover must be higher that K-1\%.
 }

@@ -44,16 +44,12 @@ SMC_combined <- function(args,
   }
   param_vals <- unname(param_vals)
 
-  #simulate model for the constraint
-  param_sims_const <- foreach::foreach(i = 1:n_particles) %dopar% {
-    args$simulate_constraint(param_vals[i,])
+  #calculate discrepancy and create simulation list object
+  param_disc_sim <- foreach::foreach(i = 1:n_particles, .combine="rbind") %dopar% {
+    args$calculate_discrepancy(param_vals[i,],args)
   }
-
-  #calculate discrepancy
-  param_disc <- foreach::foreach(i = 1:n_particles, .combine="rbind") %dopar% {
-    args$calculate_discrepancy(param_sims_const[[i]],args)
-  }
-  param_disc <- c(unname(param_disc))
+  param_sims_const <- lapply(param_disc_sim, `[[`, 1)
+  param_disc <- (unlist(lapply(param_disc_sim, `[[`, 2)))
 
   #simulate model for the likelihood
   param_sims <- foreach::foreach(i = 1:n_particles) %dopar% {
@@ -110,7 +106,7 @@ SMC_combined <- function(args,
     # weight according to new discrepancy threshold -- set weights for
     # particles with discrepancy above threshold to 0
     param_loglike_weighted_by_discrepancy_threshold <- param_loglike
-    param_loglike_weighted_by_discrepancy_threshold[param_disc>dist_next] = -Inf #check here
+    param_loglike_weighted_by_discrepancy_threshold[param_disc>dist_next] = -Inf
 
     param_w_weighted_by_discrepancy_threshold <- param_w
     param_w_weighted_by_discrepancy_threshold[param_disc>dist_next] <- 0
@@ -192,7 +188,7 @@ SMC_combined <- function(args,
                                                                   cov_matrix,
                                                                   param_disc[i],
                                                                   dist_next,
-                                                                  param_sims[i],
+                                                                  param_sims[[i]],
                                                                   param_loglike[i],
                                                                   acc_counter[i],
                                                                   newgamma)
@@ -228,7 +224,7 @@ SMC_combined <- function(args,
                                                                   cov_matrix,
                                                                   param_disc[i],
                                                                   dist_next,
-                                                                  param_sims[i],
+                                                                  param_sims[[i]],
                                                                   param_loglike[i],
                                                                   acc_counter[i],
                                                                   newgamma)
@@ -273,24 +269,26 @@ SMC_combined <- function(args,
 
   print('SMC algorithm complete')
 
-  ## simulate
-  posterior <- param_vals
-
-  cl <- parallel::makeCluster(n_cores)
-  doParallel::registerDoParallel(cl)
-
-  param_sims_posterior <- foreach::foreach(i = 1:n_particles) %dopar% {
-    args$simulate_plots(posterior[i,],param_sims[[i]],args)
-  }
-  param_sims_prior <- foreach::foreach(i = 1:n_particles) %dopar% {
-    args$simulate_plots(prior[i,],param_sims[[i]],args)
-  }
-  parallel::stopCluster(cl)#stop cluster
-  rm(cl)
+  # ## simulate
+  # posterior <- param_vals
+  #
+  # cl <- parallel::makeCluster(n_cores)
+  # doParallel::registerDoParallel(cl)
+  #
+  # param_sims_posterior <- foreach::foreach(i = 1:n_particles) %dopar% {
+  #   args$simulate_plots(posterior[i,],param_sims[[i]],args)
+  # }
+  # param_sims_prior <- foreach::foreach(i = 1:n_particles) %dopar% {
+  #   args$simulate_plots(prior[i,],param_sims[[i]],args)
+  # }
+  # parallel::stopCluster(cl)#stop cluster
+  # rm(cl)
 
 
   return(list(posterior=posterior,
-              prior=prior,
-              param_sims_posterior=param_sims_posterior,
-              param_sims_prior=param_sims_prior))
+              prior=prior
+              # ,
+              # param_sims_posterior=param_sims_posterior,
+              # param_sims_prior=param_sims_prior
+              ))
 }

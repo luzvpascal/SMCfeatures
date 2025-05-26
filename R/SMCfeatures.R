@@ -1,15 +1,13 @@
 #' @title SMCfeatures
 #' @description
 #' Main function for any parameterisation of expert elicited constraints
-#' @param param_labels - the names of the parameters in latex style
-#' @param lower - an array of lower parameter bounds
-#' @param upper - an array of upper parameter bounds
-#' @param simulate_model - a function that simulates the model outputs needed to assess if constraints are met
-#' @param calculate_discrepancy - a function that calculates discrepancy score
-#' @param simulate_constraint - a function that simulates the model outputs needed to assess if constraints are met. Default \link[SMCfeatures]{model_constraint}.
-#' @param simulate_data - a function that simulates the model outputs needed to assess likelihood of producing data
-#' @param input_data - a vector of input data. Default NA.
-#' @param output_data - a vector of output data. Default NA.
+#' @param lower a vector of lower parameter bounds. If using the Gaussian log-likelihood function (\link[SMCfeatures]{log_likelihood_Gaussian}), the last number of this array describes the standard deviation.
+#' @param upper a vector of upper parameter bounds. If using the Gaussian log-likelihood function (\link[SMCfeatures]{log_likelihood_Gaussian}), the last number of this array describes the standard deviation.
+#' @param simulate_model a function that simulates the model outputs needed to assess if constraints are met
+#' @param calculate_discrepancy a function that calculates discrepancy score. See  \link[SMCfeatures]{discrepancy_logistic_growth} for an example.
+#' @param simulate_data a function that simulates the model outputs needed to assess likelihood of producing data
+#' @param input_data a vector of input data. Default NA.
+#' @param output_data a vector of output data. Default NA.
 #' @param calculate_log_likelihood log likelihood function. Default \link[SMCfeatures]{log_likelihood_Gaussian}.
 #' @param include_expert_constraints boolean indicating whether expert ellicited constraints should be included. Default TRUE
 #' @param include_data_constraints boolean indicating whether data should be included. Default TRUE. If input_data or output_data is NA, then include_data_constraints is set to FALSE
@@ -27,12 +25,10 @@
 #' @param n_cores Number of cores desired to be used for sampling. Default set to 1 core (sequential sampling).
 #' @return vector of transformed parameters
 #' @export
-SMCfeatures <- function(parameter_labels,
-                        upper,
+SMCfeatures <- function(upper,
                         lower,
                         simulate_model,
                         calculate_discrepancy,
-                        simulate_constraint = SMCfeatures::model_constraint,
                         simulate_data = SMCfeatures::model_data,
                         input_data=NA,
                         output_data=NA,
@@ -63,6 +59,10 @@ SMCfeatures <- function(parameter_labels,
     print('and then to retain percent of particles with low discrepany and high likelihood')
   }
 
+  if (is.na(input_data)){
+    print("WARNING: No data input")
+  }
+
   # Defining special arguments ####
   args <- list()
 
@@ -80,8 +80,7 @@ SMCfeatures <- function(parameter_labels,
 
   #model simulation
   args$simulate_model <- simulate_model #inputs (parameters,inputs), returns [simulation]
-  args$simulate_constraint <- SMCfeatures::model_constraint #inputs (parameters,args), returns [simulation]
-  args$simulate_data <- SMCfeatures::model_data #inputs (parameters,args,simulation), returns [simulation]
+  args$simulate_data <- SMCfeatures::model_on_data #inputs (parameters,args,simulation), returns [simulation]
 
   #discrepancy
   args$calculate_discrepancy <- calculate_discrepancy
@@ -92,13 +91,13 @@ SMCfeatures <- function(parameter_labels,
   args$calculate_log_likelihood  <- calculate_log_likelihood
 
 
-  #PRIOR - define the prior distribution for the modelling scenario
-  # This function returns "args" a list that contains:
-
-
   # #all other relevant parameters
   args$include_expert_constraints <- include_expert_constraints
-  args$include_data_constraints <- include_data_constraints
+  if (is.na(input_data)){
+    print("WARNING: No data input")
+    print("The argument include_data_constraints will be set to FALSE")
+    args$include_data_constraints <- FALSE
+  }
   args$discrepancy_final <- discrepancy_final
 
   # args$n_particles <- n_particles
@@ -118,9 +117,6 @@ SMCfeatures <- function(parameter_labels,
                                        c,
                                        p_acc_min,
                                        n_cores)
-
-  ## project using posteriors####
-
 
   return(outputs)
 }

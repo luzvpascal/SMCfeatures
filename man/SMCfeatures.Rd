@@ -5,9 +5,20 @@
 \title{SMCfeatures}
 \usage{
 SMCfeatures(
-  define_args = SMCfeatures::define_args_logistic_growth,
+  upper,
+  lower,
+  simulate_model,
+  calculate_discrepancy,
+  simulate_data = SMCfeatures::model_data,
+  input_data = NA,
+  output_data = NA,
+  calculate_log_likelihood = SMCfeatures::log_likelihood_Gaussian,
   include_expert_constraints = TRUE,
   include_data_constraints = TRUE,
+  sampler = SMCfeatures::uniform_sampler,
+  trans_f = SMCfeatures::uniform_transform,
+  trans_finv = SMCfeatures::uniform_transform_inverse,
+  pdf = SMCfeatures::uniform_pdf_transformed,
   n_particles = 10000,
   mcmc_trials = 10,
   discrepancy_final = 0,
@@ -19,11 +30,29 @@ SMCfeatures(
 )
 }
 \arguments{
-\item{define_args}{function describing the arguments of the case study. Defaul \link[SMCfeatures]{define_args_logistic_growth}}
+\item{upper}{a vector of upper parameter bounds. If using the Gaussian log-likelihood function (\link[SMCfeatures]{log_likelihood_Gaussian}), the last number of this array describes the standard deviation.}
+
+\item{lower}{a vector of lower parameter bounds. If using the Gaussian log-likelihood function (\link[SMCfeatures]{log_likelihood_Gaussian}), the last number of this array describes the standard deviation.}
+
+\item{simulate_model}{a function that simulates the model outputs needed to assess if constraints are met}
+
+\item{calculate_discrepancy}{a function that calculates discrepancy score. See  \link[SMCfeatures]{discrepancy_logistic_growth} for an example.}
+
+\item{simulate_data}{a function that simulates the model outputs needed to assess likelihood of producing data}
+
+\item{input_data}{a vector of input data. Default NA.}
+
+\item{output_data}{a vector of output data. Default NA.}
+
+\item{calculate_log_likelihood}{log likelihood function. Default \link[SMCfeatures]{log_likelihood_Gaussian}.}
 
 \item{include_expert_constraints}{boolean indicating whether expert ellicited constraints should be included. Default TRUE}
 
-\item{include_data_constraints}{boolean indicating whether data should be included. Default TRUE}
+\item{include_data_constraints}{boolean indicating whether data should be included. Default TRUE. If input_data or output_data is NA, then include_data_constraints is set to FALSE}
+
+\item{trans_f}{transform of prior parameter space to ensure unbounded support for MCMC sampling. Default \link[SMCfeatures]{uniform_transform}}
+
+\item{trans_finv}{inverse of trans_f function. Default \link[SMCfeatures]{uniform_transform_inverse}}
 
 \item{n_particles}{Number of desired ensemble members. Default to 10000}
 
@@ -31,15 +60,19 @@ SMCfeatures(
 
 \item{discrepancy_final}{target discrepancy threshold. Default 0. If zero, p_acc_min is used to determine stopping criteria.}
 
-\item{a_disc}{tuning parameter for adaptive selection of discrepancy threshold sequence.}
+\item{a_disc}{tuning parameter for adaptive selection of discrepancy threshold sequence. Default 0.6}
 
-\item{a_like}{tuning parameter for adaptive selection of likelihood ESS sequence}
+\item{a_like}{tuning parameter for adaptive selection of likelihood ESS sequence. Default 0.3}
 
 \item{c}{tuning parameter for choosing the number of MCMC iterations in move step. Default 0.01}
 
 \item{p_acc_min}{minimum acceptable acceptance rate in the MCMC interations before exit. Default 0.0001}
 
 \item{n_cores}{Number of cores desired to be used for sampling. Default set to 1 core (sequential sampling).}
+
+\item{prior_sampler}{sampling function that generates random vectors from the joint prior distribution. Default \link[SMCfeatures]{uniform_sampler}.}
+
+\item{prior_pdf}{joint probability density function. Default \link[SMCfeatures]{uniform_pdf_transformed}}
 }
 \value{
 vector of transformed parameters

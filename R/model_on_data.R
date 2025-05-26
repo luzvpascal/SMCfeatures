@@ -1,9 +1,9 @@
-#' @title Model on data for logistic growth case study, on data points only
+#' @title Model simulation on input data
 #' @description
 #' Simulate outputs of calibrated model, on data points only
 #' @param parameters vector of parameters (growth rate, capacity, initial abundance)
 #' @param simulation list of simulation arguments, as returned by \link[SMCfeatures]{model_logistic_growth_constraint}
-#' @param args a list of arguments as returned by \link[SMCfeatures]{define_args_logistic_growth}
+#' @param args a list of arguments as defined in \link[SMCfeatures]{SMCfeatures}
 #' @return ist like object representing simulation outputs
 #' t_data: time steps for data (args$input_data)
 #' y_data: output of simulation on input data

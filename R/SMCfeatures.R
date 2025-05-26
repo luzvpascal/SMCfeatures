@@ -92,7 +92,7 @@ SMCfeatures <- function(upper,
 
   # #all other relevant parameters
   args$include_expert_constraints <- include_expert_constraints
-  if (is.na(input_data)){
+  if (is.na(input_data[1])){
     print("WARNING: No data input")
     print("The argument include_data_constraints will be set to FALSE")
     args$include_data_constraints <- FALSE

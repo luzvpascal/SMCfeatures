@@ -118,62 +118,63 @@ model_logistic_growth <- function(parameters,
 ```
 This function inputs a set of parameters (here $r$, $K$ and $y_0$) and a vector of inputs (here a vector of time steps). The output of this function is the output of the model on input data as a vector.
 
-Then, we must define the 
+### Step 2: Defining the discrepancy function
+
+The second step of our approach is to define a function that calculates the discrepancy for any parameters $r$, $K$ and $y_0$. For the logistic growth example, this function is already implemented in the package, as `discrepancy_logistic_growth`.
+This function inputs a vector of parameters (r, K, y0 and sigma) for the logistic growth example. Then it calculates the discrepancy measure follwing the constraints at time 5 and 50 (see [Non-empirical constraints](#non-empirical-constraints)). The function must return a list with a simulation list like object with t_const, y_const, K.
+and a summary statistic (discrepancy measure).
+
 ```r
-#' @title model_logistic_growth_constraint
+#' @title Simulate constraints and calculate discrepancy function
 #' @description
-#' Simulate
-#' @param parameters vector of parameters (growth rate, capacity, initial abundance, sigma)
-#' @return list like object representing simulation outputs
-#' t_const: vector of time constraints (time step 5 and 50)
-#' y_const: output of simulation on input t_const
-#' K: carrying capacity
+#' Simulate constraints and calculate discrepancy function. In this example, there are two non-empirical constraints: at year 5, the coral cover must be lower that 10%, and at year 50, the coral cover must be higher that K-1%.
+#' @param parameters a vector of parameters. Here parameters must be input in this order r, K, y0 and sigma
+#' @param args a list of arguments as defined in the function \link[SMCfeatures]{SMCfeatures}
+#' @return a list with
+#' simulation list like object with t_const, y_const, K.
+#' a summary statistic (discrepancy measure).
 #' @export
-model_logistic_growth_constraint <- function(parameters){
-  #Inputs parameters and outputs a simulation
+#'
+discrepancy_logistic_growth <- function(parameters,
+                                        args){
 
   simulation <- list()
-
   # Simulation details
   simulation$t_const <- c(5, 50)
   simulation$y_const <- SMCfeatures::model_logistic_growth(parameters,
-                                                          simulation$t_const)
-  simulation$K <- K
+                                                           simulation$t_const)
+  simulation$K <- parameters[2]
+  if (args$include_expert_constraints){
 
-  return(simulation)
+    ## 5yr constraint
+    # max coral population in first 5 years
+    max_population_in_5 <- simulation$y_const[1]
+
+    # the max allowable coral population in first 5 years
+    tolerance_in_5 <- 10
+
+    #measure constraint discrepancy
+    discrepancy_5 <- max(max_population_in_5 - tolerance_in_5,0)
+
+    ## 50yr constraint
+    # difference between carrying capacity and final coral population at 50 years
+    difference_from_K <- simulation$K - simulation$y_const[2]
+
+    # max allowable difference
+    tolerance_in_50 <- 1 #within 1# of carrying cap
+
+    #measure constraint discrepancy
+    discrepancy_50 <- max(difference_from_K - tolerance_in_50,0)
+
+    ## Discrepancy measure
+    discrepancy <- discrepancy_5 + discrepancy_50
+
+    return(list(simulation,discrepancy))
+  } else {
+    return(list(simulation,args$discrepancy_final))
+  }
 }
 ```
-
-and 
-
-```r
-#' @title Model on data for logistic growth case study, on data points only
-#' @description
-#' Simulate outputs of calibrated model, on data points only
-#' @param parameters vector of parameters (growth rate, capacity, initial abundance)
-#' @param simulation list of simulation arguments, as returned by \link[SMCfeatures]{model_logistic_growth_constraint}
-#' @param args a list of arguments as returned by \link[SMCfeatures]{define_args_logistic_growth}
-#' @return ist like object representing simulation outputs
-#' t_data: time steps for data (args$input_data)
-#' y_data: output of simulation on input data
-#' @export
-model_logistic_growth_data <- function(parameters,
-                                       simulation,
-                                       args){
-  # likelihood needs data at all time points
-  #Inputs parameters and outputs a simulation
-
-  # Simulation details
-  simulation$t_data <- args$input_data
-  simulation$y_data <- SMCfeatures::model_logistic_growth(parameters,
-                                                          simulation$t_data)
-  return(simulation)
-}
-```
-
-### Step 2: Defining the discrepancy function
-
-
 ### Step 3: Defining the likelihood function
 
 ### Step 4: Using data

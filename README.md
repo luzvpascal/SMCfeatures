@@ -104,7 +104,7 @@ outputs <- SMCfeatures(
             upper=upper,
             lower=lower,
             simulate_model=simulate_model,
-            calculate_discrepancy,
+            calculate_discrepancy=calculate_discrepancy,
             input_data = input_data,
             output_data = output_data
             )

@@ -67,7 +67,6 @@ SMCfeatures <- function(upper,
   args <- list()
 
   ## global arguments ####
-  args$parameter_labels <- parameter_labels
   args$upper <- upper
   args$lower <- lower
   args$n_params <- length(args$upper)

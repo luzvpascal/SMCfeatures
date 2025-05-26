@@ -8,9 +8,9 @@
     - [Combining data with non-empirical constraints](#combining-data-with-non-empirical-constraints)
   - [Coding the logistic growth rate example into R](#coding-the-logistic-growth-rate-example-into-R)
     - [Overview of the main function SMCfeatures](#overview-of-the-main-function-SMCfeatures)
-    - [Step 1 defining the model function][#step-1-defining-the-model-function]
-    - [Step 2 defining the discrepancy function][#step-2-defining-the-discrepancy-function]
-    - [Step 3 including observed data][#step-3-including-observed-data]
+    - [Step 1 defining the model function](#step-1-defining-the-model-function)
+    - [Step 2 defining the discrepancy function](#step-2-defining-the-discrepancy-function)
+    - [Step 3 including observed data](#step-3-including-observed-data)
 
 # Introduction
 

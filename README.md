@@ -8,9 +8,9 @@
     - [Combining data with non-empirical constraints](#combining-data-with-non-empirical-constraints)
   - [Coding the logistic growth rate example into R](#coding-the-logistic-growth-rate-example-into-R)
     - [Overview of the main function SMCfeatures](#overview-of-the-main-function-SMCfeatures)
-    - [Step 1: Defining the model function][#step-1:-defining-the-model-function]
-    - [Step 2: Defining the discrepancy function][#step-2:-defining-the-discrepancy-function]
-    - [Step 3: Including observed data][#step-3:-including-observed-data]
+    - [Step 1 defining the model function][#step-1-defining-the-model-function]
+    - [Step 2 defining the discrepancy function][#step-2-defining-the-discrepancy-function]
+    - [Step 3 including observed data][#step-3-including-observed-data]
 
 # Introduction
 
@@ -110,7 +110,7 @@ outputs <- SMCfeatures(
             )
 ```
 
-### Step 1: Defining the model function
+### Step 1 defining the model function
 
 The first step of our approach is to define a function that simulates the model for any parameters $r$, $K$ and $y_0$. For the logistic growth example, this function is already implemented in the package, as `model_logistic_growth`.
 ```r
@@ -139,7 +139,7 @@ model_logistic_growth <- function(parameters,
 ```
 This function inputs a set of parameters (here $r$, $K$ and $y_0$) and a vector of inputs (here a vector of time steps). The output of this function is the output of the model on input data as a vector.
 
-### Step 2: Defining the discrepancy function
+### Step 2 defining the discrepancy function
 
 The second step of our approach is to define a function that calculates the discrepancy for any parameters $r$, $K$ and $y_0$. For the logistic growth example, this function is already implemented in the package, as `discrepancy_logistic_growth`.
 This function inputs a vector of parameters (r, K, y0 and sigma) for the logistic growth example. Then it calculates the discrepancy measure follwing the constraints at time 5 and 50 (see [Non-empirical constraints](#non-empirical-constraints)). The function must return a list with a simulation list like object with t_const, y_const, K.
@@ -196,7 +196,7 @@ discrepancy_logistic_growth <- function(parameters,
   }
 }
 ```
-### Step 3: Including observed data
+### Step 3 including observed data
 
 The simplest usage of the package is described below.
 

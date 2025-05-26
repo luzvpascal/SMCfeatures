@@ -89,6 +89,27 @@ where $y(I_i)$ is the output of the model evaluated on the input data $I_i$. For
 
 ## Coding the logistic growth rate example into R
 
+### Overview of the main function SMCfeatures
+The simplest usage of the package is described below.
+
+```r
+library(SMCfeatures)
+upper <- c(1,100,5,1) #upper bound on r, K, y0, sigma
+lower <- c(1,100,5,1) #lower bound on r, K, y0, sigma
+simulate_model <- SMCfeatures::model_logistic_growth #define the model as the logistic growth model
+calculate_discrepancy <- SMCfeatures::discrepancy_logistic_growth #define the function that calculate the logistic growth
+input_data <- c(1,2,3) #input data, years
+output_data <- c(2, 3, 4) #output data, coral cover 
+outputs <- SMCfeatures(
+            upper=upper,
+            lower=lower,
+            simulate_model=simulate_model,
+            calculate_discrepancy,
+            input_data = input_data,
+            output_data = output_data
+            )
+```
+
 ### Step 1: Defining the model function
 
 The first step of our approach is to define a function that simulates the model for any parameters $r$, $K$ and $y_0$. For the logistic growth example, this function is already implemented in the package, as `model_logistic_growth`.
@@ -177,6 +198,4 @@ discrepancy_logistic_growth <- function(parameters,
 ```
 ### Step 3: Defining the likelihood function
 
-### Step 4: Using data
-
-### Step 5: Calling the main function `SMCfeatures`
+### Step 5: Calling the main function SMCfeatures

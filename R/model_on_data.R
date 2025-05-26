@@ -16,7 +16,7 @@ model_on_data <- function(parameters,
 
   # Simulation details
   simulation$t_data <- args$input_data
-  simulation$y_data <- args$model_simulation(parameters,
+  simulation$y_data <- args$simulate_model(parameters,
                                              simulation$t_data)
   return(simulation)
 }

@@ -59,10 +59,6 @@ SMCfeatures <- function(upper,
     print('and then to retain percent of particles with low discrepany and high likelihood')
   }
 
-  if (is.na(input_data)){
-    print("WARNING: No data input")
-  }
-
   # Defining special arguments ####
   args <- list()
 

@@ -45,7 +45,7 @@ SMC_combined <- function(args,
   param_vals <- unname(param_vals)
 
   #calculate discrepancy and create simulation list object
-  param_disc_sim <- foreach::foreach(i = 1:n_particles, .combine="rbind") %dopar% {
+  param_disc_sim <- foreach::foreach(i = 1:n_particles) %dopar% {
     args$calculate_discrepancy(param_vals[i,],args)
   }
   param_sims_const <- lapply(param_disc_sim, `[[`, 1)

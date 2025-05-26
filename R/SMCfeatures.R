@@ -92,6 +92,8 @@ SMCfeatures <- function(upper,
     print("WARNING: No data input")
     print("The argument include_data_constraints will be set to FALSE")
     args$include_data_constraints <- FALSE
+  } else {
+    args$include_data_constraints <- include_data_constraints
   }
   args$discrepancy_final <- discrepancy_final
 

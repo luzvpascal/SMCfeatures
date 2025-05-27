@@ -269,9 +269,9 @@ SMC_combined <- function(args,
 
   print('SMC algorithm complete')
 
-  # ## simulate
-  # posterior <- param_vals
-  #
+  ## simulate
+  posterior <- param_vals
+
   # cl <- parallel::makeCluster(n_cores)
   # doParallel::registerDoParallel(cl)
   #

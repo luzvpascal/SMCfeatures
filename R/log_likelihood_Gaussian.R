@@ -14,7 +14,7 @@ log_likelihood_Gaussian <- function(parameters,
   sigma <- parameters[length(parameters)]
 
   if (args$include_data_constraints){#if the user includes data
-    return( -n_data*log(sigma)-sum(sum((simulation$output_data-args$output_data)^2/(2*sigma^2))))
+    return( -n_data*log(sigma)-sum(sum((simulation$y_data-args$output_data)^2/(2*sigma^2))))
   } else{
     return(0)
   }

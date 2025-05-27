@@ -216,3 +216,101 @@ outputs <- SMCfeatures(
             output_data = output_data
             )
 ```
+
+### Generating samples 
+
+```r
+#Install from github
+library(devtools)
+install_github("luzvpascal/SMCfeatures",
+               host = "https://api.github.com")
+
+library(SMCfeatures)
+library(foreach)
+library(tidyr)
+library(tidyverse)
+library(dplyr)
+
+upper <- c(0.5, 80, 5, 20) #upper bound on r K y0 sigma
+lower <- c(0, 60, 0, 0) #lower bound on r K y0 sigma
+simulate_model <- SMCfeatures::model_logistic_growth #define the model as the logistic growth model
+simulate_plots  <- SMCfeatures::model_for_plots_logistic_growth #define the model as the logistic growth model
+calculate_discrepancy <- SMCfeatures::discrepancy_logistic_growth #define the function that calculate the logistic growth
+input_data <- c(1,3,10) #input data years
+output_data <- c(4, 4, 10) #output data coral cover
+n_cores <- 4L
+
+## outputs both: constraints and data ####
+outputs_both <- SMCfeatures(
+  upper=upper,
+  lower=lower,
+  simulate_model=simulate_model,
+  simulate_plots=simulate_plots,
+  calculate_discrepancy=calculate_discrepancy,
+  input_data = input_data,
+  output_data = output_data,
+  n_cores=n_cores
+)
+## outputs constraints only ####
+outputs_const <- SMCfeatures(
+  upper=upper,
+  lower=lower,
+  simulate_model=simulate_model,
+  simulate_plots=simulate_plots,
+  calculate_discrepancy=calculate_discrepancy,
+  n_cores=n_cores
+)
+
+## outputs data only ####
+outputs_data <- SMCfeatures(
+  upper=upper,
+  lower=lower,
+  include_expert_constraints =FALSE,#setting to false to use data only
+  simulate_model=simulate_model,
+  simulate_plots=simulate_plots,
+  calculate_discrepancy=calculate_discrepancy,
+  input_data = input_data,
+  output_data = output_data,
+  n_cores=n_cores
+)
+
+##Results both
+y_both <-  unlist(lapply(outputs_both$param_sims_posterior, `[[`, 7))
+t_both <-  unlist(lapply(outputs$param_sims_posterior, `[[`, 6))
+data_both <- data.frame(y=y_both,t=t_both,type="Both")
+##Results constraints
+y_const <-  unlist(lapply(outputs_const$param_sims_posterior, `[[`, 7))
+t_const <-  unlist(lapply(outputs$param_sims_posterior, `[[`, 6))
+data_const <- data.frame(y=y_const,t=t_const,type="Constraint")
+##Results only data
+y_data <-  unlist(lapply(outputs_data$param_sims_posterior, `[[`, 7))
+t_data <-  unlist(lapply(outputs$param_sims_posterior, `[[`, 6))
+data_data <- data.frame(y=y_data,t=t_data,type="Data")
+
+##Results prior
+y_prior <-  unlist(lapply(outputs_both$param_sims_prior, `[[`, 7))
+t_prior <-  unlist(lapply(outputs_both$param_sims_prior, `[[`, 6))
+data_prior <- data.frame(y=y_prior,t=t_prior,type="Prior")
+
+data_sum <- rbind(data_both,
+                  data_const,
+                  data_data,
+                  data_prior) %>%
+  group_by(t,type)%>%
+  summarise(mean_cover=mean(y),
+            upper=quantile(y,0.975),
+            lower=quantile(y,0.025)
+            )
+
+## plot
+data_sum %>%
+  ggplot()+
+  geom_line(aes(x=t,y=mean_cover, group=type,col=type), linewidth=1)+
+  geom_ribbon(aes(x=t, ymin = lower,ymax=upper, group=type,fill=type), alpha=0.1)+
+  theme_bw()+
+  labs(x="Time (yrs)",
+       y="Coral cover (% area)",
+       fill="Information type",
+       col="Information type")
+```
+![alt text](coral.pdf "Projected coral cover using different information")

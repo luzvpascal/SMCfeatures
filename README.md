@@ -198,12 +198,11 @@ discrepancy_logistic_growth <- function(parameters,
 ```
 ### Step 3 including observed data
 
-The simplest usage of the package is described below.
-
+Our package can also be combined observed data, as below.
 ```r
 library(SMCfeatures)
-upper <- c(1,100,5,1) #upper bound on r, K, y0, sigma
-lower <- c(1,100,5,1) #lower bound on r, K, y0, sigma
+upper <- c(0.5, 80, 5, 20) #upper bound on r K y0 sigma
+lower <- c(0, 60, 0, 0) #lower bound on r K y0 sigma
 simulate_model <- SMCfeatures::model_logistic_growth #define the model as the logistic growth model
 calculate_discrepancy <- SMCfeatures::discrepancy_logistic_growth #define the function that calculate the logistic growth
 input_data <- c(1,2,3) #input data, years

@@ -10,7 +10,7 @@
     - [Overview of the main function SMCfeatures](#overview-of-the-main-function-SMCfeatures)
     - [Step 1 defining the model function](#step-1-defining-the-model-function)
     - [Step 2 defining the discrepancy function](#step-2-defining-the-discrepancy-function)
-    - [Step 3 including observed data](#step-3-including-observed-data)
+    - [Generating samples](#generating-samples)
 
 # Introduction
 
@@ -313,4 +313,4 @@ data_sum %>%
        fill="Information type",
        col="Information type")
 ```
-![alt text](coral.pdf "Projected coral cover using different information")
+![alt text](coral.png "Projected coral cover using different information")

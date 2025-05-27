@@ -4,10 +4,12 @@
 \alias{model_for_plots_logistic_growth}
 \title{Model simulation on input data}
 \usage{
-model_for_plots_logistic_growth(parameters, args)
+model_for_plots_logistic_growth(parameters, simulation, args)
 }
 \arguments{
 \item{parameters}{vector of parameters (growth rate, capacity, initial abundance)}
+
+\item{simulation}{list of simulation arguments, as returned by \link[SMCfeatures]{model_logistic_growth_constraint}}
 
 \item{args}{a list of arguments as defined in \link[SMCfeatures]{SMCfeatures}}
 }

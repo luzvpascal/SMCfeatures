@@ -205,8 +205,8 @@ upper <- c(0.5, 80, 5, 20) #upper bound on r K y0 sigma
 lower <- c(0, 60, 0, 0) #lower bound on r K y0 sigma
 simulate_model <- SMCfeatures::model_logistic_growth #define the model as the logistic growth model
 calculate_discrepancy <- SMCfeatures::discrepancy_logistic_growth #define the function that calculate the logistic growth
-input_data <- c(1,2,3) #input data, years
-output_data <- c(2, 3, 4) #output data, coral cover 
+input_data <- c(1,3,10) #input data years
+output_data <- c(4, 4, 10) #output data coral cover
 outputs <- SMCfeatures(
             upper=upper,
             lower=lower,

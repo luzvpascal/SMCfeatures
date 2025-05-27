@@ -9,7 +9,8 @@ SMCfeatures(
   lower,
   simulate_model,
   calculate_discrepancy,
-  simulate_data = SMCfeatures::model_data,
+  simulate_data = SMCfeatures::model_on_data,
+  simulate_plots = SMCfeatures::model_on_data,
   input_data = NA,
   output_data = NA,
   calculate_log_likelihood = SMCfeatures::log_likelihood_Gaussian,
@@ -18,7 +19,7 @@ SMCfeatures(
   sampler = SMCfeatures::uniform_sampler,
   trans_f = SMCfeatures::uniform_transform,
   trans_finv = SMCfeatures::uniform_transform_inverse,
-  pdf = SMCfeatures::uniform_pdf_transformed,
+  prior_pdf = SMCfeatures::uniform_pdf_transformed,
   n_particles = 10000,
   mcmc_trials = 10,
   discrepancy_final = 0,
@@ -40,6 +41,8 @@ SMCfeatures(
 
 \item{simulate_data}{a function that simulates the model outputs needed to assess likelihood of producing data}
 
+\item{simulate_plots}{a function that simulates the model outputs. Only assessing on data by default. See \link[SMCfeatures]{model_on_data}}
+
 \item{input_data}{a vector of input data. Default NA.}
 
 \item{output_data}{a vector of output data. Default NA.}
@@ -53,6 +56,8 @@ SMCfeatures(
 \item{trans_f}{transform of prior parameter space to ensure unbounded support for MCMC sampling. Default \link[SMCfeatures]{uniform_transform}}
 
 \item{trans_finv}{inverse of trans_f function. Default \link[SMCfeatures]{uniform_transform_inverse}}
+
+\item{prior_pdf}{joint probability density function. Default \link[SMCfeatures]{uniform_pdf_transformed}}
 
 \item{n_particles}{Number of desired ensemble members. Default to 10000}
 
@@ -71,8 +76,6 @@ SMCfeatures(
 \item{n_cores}{Number of cores desired to be used for sampling. Default set to 1 core (sequential sampling).}
 
 \item{prior_sampler}{sampling function that generates random vectors from the joint prior distribution. Default \link[SMCfeatures]{uniform_sampler}.}
-
-\item{prior_pdf}{joint probability density function. Default \link[SMCfeatures]{uniform_pdf_transformed}}
 }
 \value{
 vector of transformed parameters

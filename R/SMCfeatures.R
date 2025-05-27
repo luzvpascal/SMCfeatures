@@ -6,6 +6,7 @@
 #' @param simulate_model a function that simulates the model outputs needed to assess if constraints are met
 #' @param calculate_discrepancy a function that calculates discrepancy score. See  \link[SMCfeatures]{discrepancy_logistic_growth} for an example.
 #' @param simulate_data a function that simulates the model outputs needed to assess likelihood of producing data
+#' @param simulate_plots a function that simulates the model outputs. Only assessing on data by default. See \link[SMCfeatures]{model_on_data}
 #' @param input_data a vector of input data. Default NA.
 #' @param output_data a vector of output data. Default NA.
 #' @param calculate_log_likelihood log likelihood function. Default \link[SMCfeatures]{log_likelihood_Gaussian}.
@@ -30,6 +31,7 @@ SMCfeatures <- function(upper,
                         simulate_model,
                         calculate_discrepancy,
                         simulate_data = SMCfeatures::model_on_data,
+                        simulate_plots = SMCfeatures::model_on_data,
                         input_data=NA,
                         output_data=NA,
                         calculate_log_likelihood=SMCfeatures::log_likelihood_Gaussian,
@@ -84,6 +86,7 @@ SMCfeatures <- function(upper,
   args$input_data <- input_data#times
   args$output_data <- output_data#coral cover observation
   args$calculate_log_likelihood  <- calculate_log_likelihood
+  args$simulate_plots  <- simulate_plots
 
 
   # #all other relevant parameters

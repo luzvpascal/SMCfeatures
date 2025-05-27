@@ -45,7 +45,7 @@ SMC_combined <- function(args,
   param_vals <- unname(param_vals)
 
   #calculate discrepancy and create simulation list object
-  param_disc_sim <- foreach::foreach(i = 1:n_particles) %dopar% {
+  param_disc_sim <- foreach::foreach(i = 1:n_particles, .combine="rbind") %dopar% {
     args$calculate_discrepancy(param_vals[i,],args)
   }
   param_sims_const <- lapply(param_disc_sim, `[[`, 1)
@@ -272,23 +272,23 @@ SMC_combined <- function(args,
   ## simulate
   posterior <- param_vals
 
-  # cl <- parallel::makeCluster(n_cores)
-  # doParallel::registerDoParallel(cl)
-  #
-  # param_sims_posterior <- foreach::foreach(i = 1:n_particles) %dopar% {
-  #   args$simulate_plots(posterior[i,],param_sims[[i]],args)
-  # }
-  # param_sims_prior <- foreach::foreach(i = 1:n_particles) %dopar% {
-  #   args$simulate_plots(prior[i,],param_sims[[i]],args)
-  # }
-  # parallel::stopCluster(cl)#stop cluster
-  # rm(cl)
+  cl <- parallel::makeCluster(n_cores)
+  doParallel::registerDoParallel(cl)
+
+  param_sims_posterior <- foreach::foreach(i = 1:n_particles) %dopar% {
+    args$simulate_plots(posterior[i,],param_sims[[i]],args)
+  }
+  param_sims_prior <- foreach::foreach(i = 1:n_particles) %dopar% {
+    args$simulate_plots(prior[i,],param_sims[[i]],args)
+  }
+  parallel::stopCluster(cl)#stop cluster
+  rm(cl)
 
 
   return(list(posterior=posterior,
               prior=prior
-              # ,
-              # param_sims_posterior=param_sims_posterior,
-              # param_sims_prior=param_sims_prior
+              ,
+              param_sims_posterior=param_sims_posterior,
+              param_sims_prior=param_sims_prior
               ))
 }

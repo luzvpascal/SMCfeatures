@@ -14,7 +14,7 @@ model_on_data(parameters, simulation, args)
 \item{args}{a list of arguments as defined in \link[SMCfeatures]{SMCfeatures}}
 }
 \value{
-ist like object representing simulation outputs
+list like object representing simulation outputs
 t_data: time steps for data (args$input_data)
 y_data: output of simulation on input data
 }

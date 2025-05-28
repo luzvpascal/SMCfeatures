@@ -1,12 +1,12 @@
-#' @title Generation of model ensembles Sequential Monte Carlo - Approximate Bayesian Computation.
+#' @title Generation of model ensembles via Sequential Monte Carlo
 #' @description
-#' Generation of model ensembles using Adaptive sequential Monte Carlo for approximate Bayesian computation
+#' Generation of model ensembles using an adaptive sequential Monte Carlo algorithm that uses techniques from approximate Bayesian computation and exact Bayesian inference
 #' @param args a list of arguments as returned by \link[SMCfeatures]{define_args_logistic_growth}
 #' @param n_particles Number of desired ensemble members. Default to 10000
 #' @param mcmc_trials number of MCMC steps to try before selecting appropriate number. Default 10
 #' @param discrepancy_final target discrepancy threshold. Default 0. If zero, p_acc_min is used to determine stopping criteria.
 #' @param a_disc tuning parameter for adaptive selection of discrepancy threshold sequence.
-#' @param a_like tuning parameter for adaptive selection of likelihood ESS sequence
+#' @param a_like tuning parameter for adaptive selection of likelihood ESS sequence (must be less than a_disc!)
 #' @param c tuning parameter for choosing the number of MCMC iterations in move step. Default 0.01
 #' @param p_acc_min minimum acceptable acceptance rate in the MCMC interations before exit. Default 0.0001
 #' @param n_cores Number of cores desired to be used for sampling. Default set to 1 core (sequential sampling).

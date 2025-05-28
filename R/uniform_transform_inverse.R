@@ -1,7 +1,9 @@
 #' @title inverse transformation function
 #' @description
-#' This function uses a reverts the transformation for uniform distributions
-#' @param theta_trans vector of parameters to transformed back
+#' This function uses a reverts the transformation for uniform distributions as defined in \link[uniform_transform]
+#'
+#'
+#' @param theta_trans vector of parameters to back-transform
 #' @param args a list of arguments as returned by \link[SMCfeatures]{define_args_logistic_growth}
 #' @return vector of transformed parameters
 #' @export

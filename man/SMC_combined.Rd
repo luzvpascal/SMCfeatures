@@ -2,7 +2,7 @@
 % Please edit documentation in R/SMC_combined.R
 \name{SMC_combined}
 \alias{SMC_combined}
-\title{Generation of model ensembles Sequential Monte Carlo - Approximate Bayesian Computation.}
+\title{Generation of model ensembles via Sequential Monte Carlo}
 \usage{
 SMC_combined(
   args,
@@ -24,7 +24,7 @@ SMC_combined(
 
 \item{a_disc}{tuning parameter for adaptive selection of discrepancy threshold sequence.}
 
-\item{a_like}{tuning parameter for adaptive selection of likelihood ESS sequence}
+\item{a_like}{tuning parameter for adaptive selection of likelihood ESS sequence (must be less than a_disc!)}
 
 \item{c}{tuning parameter for choosing the number of MCMC iterations in move step. Default 0.01}
 
@@ -41,5 +41,5 @@ part_s=discrepancy value
 prior_sample=prior distribution
 }
 \description{
-Generation of model ensembles using Adaptive sequential Monte Carlo for approximate Bayesian computation
+Generation of model ensembles using an adaptive sequential Monte Carlo algorithm that uses techniques from approximate Bayesian computation and exact Bayesian inference
 }

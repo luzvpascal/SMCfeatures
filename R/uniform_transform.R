@@ -1,6 +1,6 @@
 #' @title transformation function
 #' @description
-#' This function uses a transform for uniform distributions, so all values are within the uniform bounds.
+#' This function uses a transform for uniform distributions, so all values are within the uniform bounds when sampling using SMC.
 #'
 #' @param theta vector of parameters to transform
 #' @param args a list of arguments as returned by \link[SMCfeatures]{define_args_logistic_growth}

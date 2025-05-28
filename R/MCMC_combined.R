@@ -1,7 +1,7 @@
 #' @title Monte Carlo Markov Chain
 #' @description
-#' Runs MCMC
-#' @param args a list of arguments as returned by \link[EEMtoolbox]{args_function}
+#' Runs the Markov chain monte carlo algorithm used within MCMC
+#' @param args a list of arguments as returned by \link[SMCfeatures]{args_function}
 #' @param mcmc_steps number of MCMC steps
 #' @param params_transformed vector of values of parameters for current particle
 #' @param cov_matrix covariance matrix

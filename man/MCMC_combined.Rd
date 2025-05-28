@@ -18,7 +18,7 @@ MCMC_combined(
 )
 }
 \arguments{
-\item{args}{a list of arguments as returned by \link[EEMtoolbox]{args_function}}
+\item{args}{a list of arguments as returned by \link[SMCfeatures]{args_function}}
 
 \item{mcmc_steps}{number of MCMC steps}
 
@@ -46,5 +46,5 @@ sims: simulation outputs on expert constraint
 loglike log likelihood of moved parameters
 }
 \description{
-Runs MCMC
+Runs the Markov chain monte carlo algorithm used within MCMC
 }

@@ -1,6 +1,6 @@
 #' @title SMCfeatures
 #' @description
-#' Main function for any parameterisation of expert elicited constraints
+#' Main function for calibrating any non-empirical features.
 #' @param lower a vector of lower parameter bounds. If using the Gaussian log-likelihood function (\link[SMCfeatures]{log_likelihood_Gaussian}), the last number of this array describes the standard deviation.
 #' @param upper a vector of upper parameter bounds. If using the Gaussian log-likelihood function (\link[SMCfeatures]{log_likelihood_Gaussian}), the last number of this array describes the standard deviation.
 #' @param simulate_model a function that simulates the model outputs needed to assess if constraints are met

@@ -81,5 +81,5 @@ SMCfeatures(
 vector of transformed parameters
 }
 \description{
-Main function for any parameterisation of expert elicited constraints
+Main function for calibrating any non-empirical features.
 }

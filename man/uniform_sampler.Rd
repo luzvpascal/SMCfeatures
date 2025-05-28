@@ -10,8 +10,8 @@ uniform_sampler(args)
 \item{args}{a list of arguments as returned by \link[SMCfeatures]{define_args_logistic_growth}}
 }
 \value{
-a vector of sampled parameters
+a vector of parameter samples
 }
 \description{
-Uniform sampling of parameters between lower and upper bounds defined in args
+This function uniformly samples parameters between lower and upper bounds defined in args
 }

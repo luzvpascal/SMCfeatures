@@ -15,5 +15,5 @@ uniform_transform(theta, args)
 vector of transformed parameters
 }
 \description{
-This function uses a transform for uniform distributions, so all values are within the uniform bounds.
+This function uses a transform for uniform distributions, so all values are within the uniform bounds when sampling using SMC.
 }

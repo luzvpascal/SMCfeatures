@@ -1,6 +1,8 @@
 #' @title Model of logistic growth case study
 #' @description
-#' Simulate outputs of logistic growth model
+#' Simulates the outputs of logistic growth model at the specified inputs. This function specifies the model for simulation
+#'
+#'
 #' @param parameters vector of parameters (growth rate, capacity, initial abundance)
 #' @param input input data. here it is a vector of time steps of interest
 #' @return

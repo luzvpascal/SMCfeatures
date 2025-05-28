@@ -15,5 +15,5 @@ model_logistic_growth(parameters, input)
 y_data: output of simulation on input data as a vector
 }
 \description{
-Simulate outputs of logistic growth model
+Simulates the outputs of logistic growth model at the specified inputs. This function specifies the model for simulation
 }

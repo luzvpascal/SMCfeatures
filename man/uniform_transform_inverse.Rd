@@ -7,7 +7,7 @@
 uniform_transform_inverse(theta_trans, args)
 }
 \arguments{
-\item{theta_trans}{vector of parameters to transformed back}
+\item{theta_trans}{vector of parameters to back-transform}
 
 \item{args}{a list of arguments as returned by \link[SMCfeatures]{define_args_logistic_growth}}
 }
@@ -15,5 +15,5 @@ uniform_transform_inverse(theta_trans, args)
 vector of transformed parameters
 }
 \description{
-This function uses a reverts the transformation for uniform distributions
+This function uses a reverts the transformation for uniform distributions as defined in \link\link{uniform_transform}
 }

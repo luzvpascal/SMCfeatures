@@ -14,7 +14,7 @@
 
 # Introduction
 
-This R package is the implements the work from Vollert et al., 2025.
+This R package is an implementation of the methods as described in "Beyond data: leveraging non-empirical information and expert knowledge in Bayesian model calibration" (2025) by Vollert, Drovandi, Jeynes-Smith, Pascal and Adams. This package contains code to calibrate any model to non-empirical information and data via a sequential Monte Carlo (SMC) algorithm that uses techniques from both approximate Bayesian computation and exact Bayesian inference. Here, we detail how to use this code for any model and information, via an example in logistic coral growth. 
 
 
 # Installation
@@ -43,12 +43,12 @@ install_github("luzvpascal/SMCfeatures",
 ## Mathematical formalism
 
 ### Logistic growth model
-We consider a simple logistic growth example, representing the evolution of coral growth after a disturbance. The logistic growth model has the following shape:
+We consider a simple logistic growth example, representing the recovery of coral populations after a disturbance. The logistic growth model can be expressed as:
 
 ```math
 \frac{\rm{d}y}{\rm{d}t} = r.y(t)\left(1-\frac{y(t)}{K}\right),\quad y(0) = y_0,
 ```
-where $y (t)$ represents the coral cover at year $t$ (% area), $t$ is the time (years), $r$ is the instrinsic growth rate ($year^{-1}$), $K$ is the carrying capacity (% area) and $y_0$ is the initial coral cover (% area).
+where $y (t)$ represents the coral cover at year $t$ (% area), $t$ is the time (years), $r$ is the growth rate ($year^{-1}$), $K$ is the carrying capacity (% area) and $y_0$ is the initial coral cover (% area).
 
 The analytical solution of this ODE is :
 ```math
@@ -68,33 +68,35 @@ These constraints can be expressed mathematically as:
 y(5)=\frac{Ky_0}{y_0+(K-y_0)e^{-5r}} \leq 10, \quad \quad y(50)=\frac{Ky_0}{y_0+(K-y_0)e^{-50r}} \geq K-1.
 ```
 
-To include these constraints into our approximate Bayesian computation algorithm, we define a discrepancy function $\rho$:
+To include this non-empirical information into model calibration, we define a discrepancy function $\rho$ that describes the discrepancy from expected behaviours:
 ```math
 \rho = \rho_5 + \rho_{50}
 ```
 where
 ```math
-\rho_5 = \max(0, y(5) - 10) \quad \text{and} \quad \rho_{50}=\max(0, 0.99*K - y(50)).
+\rho_5 = \max(0, y(5) - 10) \quad \text{and} \quad \rho_{50}=\max(0, K - 1 - y(50)).
 ```
 
-$\rho_5$ measures the discrepancy of coral cover exceed 10% at year 5, and $\rho_{50}$ the gap between $K-1$ and the coral cover at year 50.
+$\rho_5$ measures the discrepancy between modeled coral cover and recovering beyond 10% at year 5, and $\rho_{50}$ the gap between modeled coral cover and recovering less than $K-1$% at year 50.
+
+This discrepancy function will be used to calibrate the model to non-empirical information. 
 
 
 ### Combining data with non-empirical constraints
 
-We can combine our approach with traditional SMC methods to estimate parameters. We use a Gaussian likelihood function.
+In addition, we will calibrate the model to a dataset. Here, we use a Gaussian likelihood function.
 We assume that we have a dataset $\mathcal{D}(I, O)$, where $I$ are the data inputs and $O$ the data outputs. The Gaussian log-likelihood function is thus:
 
 ```math
 \mathcal{L}(I, O) = - |D|\log(\sigma) - \sum_i \frac{(O_i - y(I_i))^2}{2\sigma^2},
 ```
-where $y(I_i)$ is the output of the model evaluated on the input data $I_i$. For the logistic growth model, $y$ is defined by parameters $r$, $K$ and $y_0$.
+where $y(I_i)$ is the output of the model evaluated on the input data $I_i$. For the logistic growth model, $y$ is defined by parameters $r$, $K$ and $y_0$. Here, we are calibrating an additional parameter, $\sigma$, which is the measurement noise. 
 
 
 ## Coding the logistic growth rate example into R
 
 ### Overview of the main function SMCfeatures
-The simplest usage of the package is described below.
+By specifying a model, a discrepancy, and a dataset, the package can be simply used as follows. 
 
 ```r
 library(SMCfeatures)
@@ -112,7 +114,7 @@ outputs <- SMCfeatures(
 
 ### Step 1 defining the model function
 
-The first step of our approach is to define a function that simulates the model for any parameters $r$, $K$ and $y_0$. For the logistic growth example, this function is already implemented in the package, as `model_logistic_growth`.
+The first step of our approach is to define a function that simulates the model for any value of the model parameters (in this case $r$, $K$ and $y_0$). For the logistic growth example, this function is already implemented in the package, as `model_logistic_growth`.
 ```r
 #' @title Model of logistic growth case study
 #' @description
@@ -137,12 +139,12 @@ model_logistic_growth <- function(parameters,
   return(y_data)
 }
 ```
-This function inputs a set of parameters (here $r$, $K$ and $y_0$) and a vector of inputs (here a vector of time steps). The output of this function is the output of the model on input data as a vector.
+This function inputs a set of parameters (here $r$, $K$ and $y_0$) and a vector of data inputs (here a vector of times at which there is a data point). The output of this function is the specified output of the model as a vector (in this case, the modeled coral cover at the times when there is a data point).
 
 ### Step 2 defining the discrepancy function
 
 The second step of our approach is to define a function that calculates the discrepancy for any parameters $r$, $K$ and $y_0$. For the logistic growth example, this function is already implemented in the package, as `discrepancy_logistic_growth`.
-This function inputs a vector of parameters (r, K, y0 and sigma) for the logistic growth example. Then it calculates the discrepancy measure follwing the constraints at time 5 and 50 (see [Non-empirical constraints](#non-empirical-constraints)). The function must return a list with a simulation list like object with t_const, y_const, K.
+This function inputs a vector of parameters (r, K, y0 and sigma) for the logistic growth example. Then it calculates the discrepancy measure for the constraints at time 5 and 50 (see [Non-empirical constraints](#non-empirical-constraints)). The function must return a list with a simulation list like object with t_const, y_const, K.
 and a summary statistic (discrepancy measure).
 
 ```r
@@ -198,7 +200,7 @@ discrepancy_logistic_growth <- function(parameters,
 ```
 ### Step 3 including observed data
 
-Our package can also be combined observed data, as below.
+Our package includes the option to additionally calibrate the model to observed data, as below.
 ```r
 library(SMCfeatures)
 upper <- c(0.5, 80, 5, 20) #upper bound on r K y0 sigma
@@ -218,6 +220,9 @@ outputs <- SMCfeatures(
 ```
 
 ### Generating samples 
+
+An example of this code, run in full, as in the paper "Beyond data: leveraging non-empirical information and expert knowledge in Bayesian model calibration" is shown below.
+
 
 ```r
 #Install from github

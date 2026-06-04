@@ -13,5 +13,5 @@ uniform_pdf_transformed(theta_trans)
 vector of transformed parameters
 }
 \description{
-Density of transformed uniform distribution as defined in \link{uniform_transform}
+Density of transformed uniform distribution as defined in \link[SMCfeatures]{uniform_transform}
 }

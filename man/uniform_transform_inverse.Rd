@@ -15,5 +15,5 @@ uniform_transform_inverse(theta_trans, args)
 vector of transformed parameters
 }
 \description{
-This function uses a reverts the transformation for uniform distributions as defined in \link\link{uniform_transform}
+This function uses a reverts the transformation for uniform distributions as defined in \link[SMCfeatures]{uniform_transform}
 }
